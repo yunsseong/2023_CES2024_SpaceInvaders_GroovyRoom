@@ -112,7 +112,7 @@ public class GameScreen extends Screen {
 
 	/** Checks life increase item is used. **/
 	private boolean haslifeItemUsed = false;
-
+	private boolean isShipSoundOn = false;
 
 
 	/**
@@ -294,15 +294,21 @@ public class GameScreen extends Screen {
 
 				if (moveRight && !isRightBorder) {
 					this.ship.moveRight();
-				}
-				if (moveLeft && !isLeftBorder) {
+					if (!isShipSoundOn) {
+						SoundManager.playSound("shi");
+						isShipSoundOn = true;
+					}
+				} else if (moveLeft && !isLeftBorder) {
 					this.ship.moveLeft();
-				}
-
-				if((moveRight || moveLeft)) {
-					SoundManager.playSound("ship_moving");
+					if (!isShipSoundOn) {
+						SoundManager.playSound("shi");
+						isShipSoundOn = true;
+					}
 				} else {
-					SoundManager.stopSound("ship_moving");
+					if (isShipSoundOn) {
+						SoundManager.stopSound("shi");
+						isShipSoundOn = false;
+					}
 				}
 
 				if ( replayability.getReplay()==0 && inputManager.isKeyDown(Core.getKeySettingCode(2))){

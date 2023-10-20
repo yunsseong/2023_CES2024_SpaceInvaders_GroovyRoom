@@ -190,8 +190,14 @@ public final class Core {
 							bonusLife, width, height, FPS);
 
 					SoundManager.closeAllLevelBGM();
-					SoundManager.startLevelBGM(gameState.getLevel());
-					SoundManager.startSound("BGM/B_Ship", "ship_moving", true, true,1f);
+					//SoundManager.startLevelBGM(gameState.getLevel());
+					SoundManager.startSound("BGM/B_HighScore","shi",false,true);
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						throw new RuntimeException(e);
+					}
+					//SoundManager.stopSound("shi");
 
 					LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
 							+ " title screen at " + FPS + " fps.");

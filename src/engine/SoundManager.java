@@ -106,9 +106,9 @@ public class SoundManager {
     public static void closeSound(String clipName) {
         Clip clip = clips.get(clipName);
         if (clip != null && clip.isActive()) {
+            clip.close();
             bgms.remove(clip);
             clips.remove(clipName);
-            clip.close();
         }
     }
 
@@ -136,9 +136,9 @@ public class SoundManager {
                             throw new RuntimeException(e);
                         }
                     }
+                    clip.close();
                     bgms.remove(clip);
                     clips.remove(clipName);
-                    clip.close();
                 }
             }).start();
         }
@@ -146,12 +146,13 @@ public class SoundManager {
 
     public static void playSound(String clipName){
         Clip clip = clips.get(clipName);
-        if (clip != null && !clip.isActive()) clip.loop(Clip.LOOP_CONTINUOUSLY);
+        if (clip != null && !clip.isActive()) clip.start();
     }
 
     public static void stopSound(String clipName){
         Clip clip = clips.get(clipName);
-        if (clip != null && clip.isActive()) clip.stop();
+        //if (clip != null && clip.isActive())
+        clip.stop();
     }
 
 
