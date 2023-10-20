@@ -299,11 +299,8 @@ public class GameScreen extends Screen {
 					this.ship.moveLeft();
 				}
 
-
 				if((moveRight || moveLeft)) {
-					if (!SoundManager.isPlaying("ship_moving")) {
-						SoundManager.playSound("BGM/B_Ship", "ship_moving", true, true);
-					}
+					SoundManager.playSound("ship_moving");
 				} else {
 					SoundManager.stopSound("ship_moving");
 				}
@@ -324,13 +321,13 @@ public class GameScreen extends Screen {
 						if(this.ship.shoot(this.bullets, 1)){
 							this.bulletsShot1++;
 							this.bullet_count++;
-							SoundManager.playSound("SFX/S_Ally_Shoot_a", "AllyShootA", false, false);
+							SoundManager.startSound("SFX/S_Ally_Shoot_a", "AllyShootA", false, false);
 						}
 						if(this.ship.isExistAuxiliaryShips()){
 							for (Ship auxiliaryShip : this.ship.getAuxiliaryShips()) {
 								if(auxiliaryShip.shoot(this.bullets, 1)) {
 									this.bulletsShot1++;
-									SoundManager.playSound("SFX/S_Ally_Shoot_b", "AllyShootB", false, false);
+									SoundManager.startSound("SFX/S_Ally_Shoot_b", "AllyShootB", false, false);
 								}
 							}
 						}
@@ -427,7 +424,7 @@ public class GameScreen extends Screen {
 					//player1
 					if (this.bullet_count<=9 && inputManager.isKeyDown(Core.getKeySettingCode(2)) && (this.lives > 0)) {
 						if(this.ship.shoot(this.bullets, 1)){
-							SoundManager.playSound("SFX/S_Ally_Shoot_a", "AllyShoota", false, false);
+							SoundManager.startSound("SFX/S_Ally_Shoot_a", "AllyShoota", false, false);
 							this.bulletsShot1++;
 							this.bullet_count++;
 						}
@@ -435,7 +432,7 @@ public class GameScreen extends Screen {
 							for (Ship auxiliaryShip : this.ship.getAuxiliaryShips())
 								if(auxiliaryShip.shoot(this.bullets, 1)){
 									this.bulletsShot1++;
-									SoundManager.playSound("SFX/S_Ally_Shoot_b", "AllyShootb", false, false);
+									SoundManager.startSound("SFX/S_Ally_Shoot_b", "AllyShootb", false, false);
 								}
 						}
 
@@ -474,11 +471,11 @@ public class GameScreen extends Screen {
 						if(this.ship2.shoot(this.bullets, 2)){
 							this.bulletsShot2++;
 							this.bullet_count2++;
-							SoundManager.playSound("SFX/S_Ally_Shoot_c", "AllyShootc", false, false);
+							SoundManager.startSound("SFX/S_Ally_Shoot_c", "AllyShootc", false, false);
 							if(this.ship2.isExistAuxiliaryShips()){
 								for (Ship auxiliaryShip : this.ship2.getAuxiliaryShips())
 									if(auxiliaryShip.shoot(this.bullets, 2)){
-										SoundManager.playSound("SFX/S_Ally_Shoot_d", "AllyShootd", false, false);
+										SoundManager.startSound("SFX/S_Ally_Shoot_d", "AllyShootd", false, false);
 										this.bulletsShot2++;
 									}
 							}
@@ -522,14 +519,14 @@ public class GameScreen extends Screen {
 				if (!this.enemyShipSpecial.isDestroyed())
 					this.enemyShipSpecial.move(2, 0);
 				else if (this.enemyShipSpecialExplosionCooldown.checkFinished()) {
-					SoundManager.playSound("SFX/S_Enemy_Destroy_b", "SpecialEnemyShipDestroyed", false, false);
+					SoundManager.startSound("SFX/S_Enemy_Destroy_b", "SpecialEnemyShipDestroyed", false, false);
 					this.enemyShipSpecial = null;
 				}
 			}
 
 			if (this.enemyShipSpecial == null
 					&& this.enemyShipSpecialCooldown.checkFinished()) {
-				SoundManager.playSound("SFX/S_Enemy_Special", "specialEnemyAppear", false, false);
+				SoundManager.startSound("SFX/S_Enemy_Special", "specialEnemyAppear", false, false);
 				this.enemyShipSpecial = new EnemyShip();
 				this.enemyShipSpecialCooldown.reset();
 				this.logger.info("A special ship appears");
@@ -664,11 +661,11 @@ public class GameScreen extends Screen {
 					- (System.currentTimeMillis()
 					- this.gameStartTime)) / 1000);
 			long beep = ((INPUT_DELAY - (System.currentTimeMillis() - this.gameStartTime)));
-			SoundManager.stopSound("ship_moving");
+			SoundManager.closeSound("ship_moving");
 			if ((beep<3995 && beep>3975) || (beep<2995 && beep>2975) || (beep<1995 && beep>1975))
-				SoundManager.playSound("SFX/S_LevelStart_b", "level_start_beep", false, false);
+				SoundManager.startSound("SFX/S_LevelStart_b", "level_start_beep", false, false);
 			if ((beep<995 && beep>975))
-				SoundManager.playSound("SFX/S_LevelStart_a", "level_start_count", false, false);
+				SoundManager.startSound("SFX/S_LevelStart_a", "level_start_count", false, false);
 			drawManager.drawCountDown(this, this.level, countdown,
 					this.bonusLife);
 			drawManager.drawHorizontalLine(this, this.height / 2 - this.height
@@ -726,9 +723,9 @@ public class GameScreen extends Screen {
                                 this.lives--;
                             }
 							if (this.lives <= 0)
-								SoundManager.playSound("SFX/S_Ally_Destroy_b", "Allay_Des_b", false, false);
+								SoundManager.startSound("SFX/S_Ally_Destroy_b", "Allay_Des_b", false, false);
 							else
-								SoundManager.playSound("SFX/S_Ally_Destroy_a", "Allay_Des_a", false, false);
+								SoundManager.startSound("SFX/S_Ally_Destroy_a", "Allay_Des_a", false, false);
                             this.logger.info("Hit on player1 ship, " + this.lives + " lives remaining.");
                         }
                     }
@@ -738,13 +735,13 @@ public class GameScreen extends Screen {
 
                             if (enemyShip.hasItem()) {
                                 items.add(new Item(enemyShip.getPositionX(), enemyShip.getPositionY(), enemyShip.getItemRange()));
-								SoundManager.playSound("SFX/S_Item_Create", "itemCreate", false, false);
+								SoundManager.startSound("SFX/S_Item_Create", "itemCreate", false, false);
 
 							}
 
                             if (this.isBomb) {
                                 List<EnemyShip> enemyShips = this.enemyShipFormation.destroyByBomb(enemyShip);
-								SoundManager.playSound("SFX/S_Item_Bomb", "Bomb", false, false);
+								SoundManager.startSound("SFX/S_Item_Bomb", "Bomb", false, false);
                                 for (EnemyShip enemy : enemyShips) {
                                     this.score += enemy.getPointValue();
                                     this.shipsDestroyed++;
@@ -783,9 +780,9 @@ public class GameScreen extends Screen {
 								this.lives--;
 							}
 							if (this.lives <= 0)
-								SoundManager.playSound("SFX/S_Ally_Destroy_b", "Allay_Des_b", false, false);
+								SoundManager.startSound("SFX/S_Ally_Destroy_b", "Allay_Des_b", false, false);
 							else
-								SoundManager.playSound("SFX/S_Ally_Destroy_a", "Allay_Des_a", false, false);
+								SoundManager.startSound("SFX/S_Ally_Destroy_a", "Allay_Des_a", false, false);
 							this.logger.info("Hit on player1 ship, " + this.lives + " lives remaining.");
 						}
 					}
@@ -797,9 +794,9 @@ public class GameScreen extends Screen {
 								this.lives2--;
 							}
 							if (this.lives2 <= 0)
-								SoundManager.playSound("SFX/S_Ally_Destroy_b", "Allay_Des_b", false, false);
+								SoundManager.startSound("SFX/S_Ally_Destroy_b", "Allay_Des_b", false, false);
 							else
-								SoundManager.playSound("SFX/S_Ally_Destroy_a", "Allay_Des_a", false, false);
+								SoundManager.startSound("SFX/S_Ally_Destroy_a", "Allay_Des_a", false, false);
 							this.logger.info("Hit on player2 ship, " + this.lives2 + " lives remaining.");
 						}
 					}
@@ -812,7 +809,7 @@ public class GameScreen extends Screen {
 
                             if (this.isBomb){
                                 List<EnemyShip> enemyShips = this.enemyShipFormation.destroyByBomb(enemyShip);
-								SoundManager.playSound("SFX/S_Item_Bomb", "Bomb", false, false);
+								SoundManager.startSound("SFX/S_Item_Bomb", "Bomb", false, false);
                                 for(EnemyShip enemy : enemyShips) {
                                     this.score += enemy.getPointValue();
                                     this.shipsDestroyed++;
@@ -832,7 +829,7 @@ public class GameScreen extends Screen {
 
                             if (this.isBomb){
                                 List<EnemyShip> enemyShips = this.enemyShipFormation.destroyByBomb(enemyShip);
-								SoundManager.playSound("SFX/S_Item_Bomb", "Bomb", false, false);
+								SoundManager.startSound("SFX/S_Item_Bomb", "Bomb", false, false);
                                 for(EnemyShip enemy : enemyShips) {
                                     this.score += enemy.getPointValue();
                                     this.shipsDestroyed++;
@@ -875,7 +872,7 @@ public class GameScreen extends Screen {
 		for (Item item : this.items) {
 			if (checkCollision(item, this.ship) && !this.levelFinished) {
 				recyclableItem.add(item);
-				SoundManager.playSound("SFX/S_Item_Get", "ItemGet", false, false);
+				SoundManager.startSound("SFX/S_Item_Get", "ItemGet", false, false);
 				this.ship.getItemQueue().enque(item);
 			}
 		}
@@ -883,7 +880,7 @@ public class GameScreen extends Screen {
 			for (Item item : this.items2) {
 				if (checkCollision(item, this.ship2) && !this.levelFinished) {
 					recyclableItem.add(item);
-					SoundManager.playSound("SFX/S_Item_Get", "ItemGet", false, false);
+					SoundManager.startSound("SFX/S_Item_Get", "ItemGet", false, false);
 					this.ship2.getItemQueue().enque(item);
 				}
 			}
@@ -1013,13 +1010,13 @@ public class GameScreen extends Screen {
 					item.getItemType() == Item.ItemType.SubPlaneItem) {
 				ship.setAuxiliaryShipsMode();
 				this.logger.info("SubPlane Item 사용");
-				SoundManager.playSound("SFX/S_Item_SubShip", "SubPlaneItem", false, true); // 보조비행기 아이템 bgm
+				SoundManager.startSound("SFX/S_Item_SubShip", "SubPlaneItem", false, true); // 보조비행기 아이템 bgm
 
 			}
 			else if (!item.getIsGet() &&
 					item.getItemType() == Item.ItemType.SpeedUpItem) {
 				ship.setItemSpeed();
-				SoundManager.playSound("SFX/S_Item_SpeedUp", "SpeedUpItem", false, true); // 속도 증가 아이템 bgm
+				SoundManager.startSound("SFX/S_Item_SpeedUp", "SpeedUpItem", false, true); // 속도 증가 아이템 bgm
 
 
 			}
@@ -1027,14 +1024,14 @@ public class GameScreen extends Screen {
 					item.getItemType() == Item.ItemType.InvincibleItem) {
 				ship.runInvincible();
 				this.logger.info("Invincible Item 사용");
-				SoundManager.playSound("SFX/S_Item_Invicible", "InvincibleItem", false, true);  // 무적 상태 아이템 bgm
+				SoundManager.startSound("SFX/S_Item_Invicible", "InvincibleItem", false, true);  // 무적 상태 아이템 bgm
 
 			}
 			else if (!item.getIsGet() &&
 					item.getItemType() == Item.ItemType.BombItem) {
 				setBomb(true);
 				this.logger.info("Bomb Item 사용");
-				SoundManager.playSound("SFX/S_Item_Bomb_Equipped", "InvincibleItem", false, true);  // 무적 상태 아이템 bgm
+				SoundManager.startSound("SFX/S_Item_Bomb_Equipped", "InvincibleItem", false, true);  // 무적 상태 아이템 bgm
 
 
 			}

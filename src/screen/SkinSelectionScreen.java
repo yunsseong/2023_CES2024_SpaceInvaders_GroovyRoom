@@ -54,7 +54,7 @@ public class SkinSelectionScreen extends Screen{
                 this.selectionCooldown.reset();
             }
             if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
-                SoundManager.playSound("SFX/S_MenuClick", "menu_select", false, false);
+                SoundManager.startSound("SFX/S_MenuClick", "menu_select", false, false);
                 this.isRunning = false;
             }
         }

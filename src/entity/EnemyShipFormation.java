@@ -394,7 +394,7 @@ public class EnemyShipFormation implements Iterable<EnemyShip> {
 				shot.set(index, true);
 				EnemyShip shooter = this.shooters.get(index);
 				shooter.shoot(bullets);
-				SoundManager.playSound("SFX/S_Enemy_Shoot", "EnemyShoot", false, false);
+				SoundManager.startSound("SFX/S_Enemy_Shoot", "EnemyShoot", false, false);
 				switch (shooter.spriteType)
 				{
 					case EnemyShipA1:
@@ -451,7 +451,7 @@ public class EnemyShipFormation implements Iterable<EnemyShip> {
 				this.logger.info("Shooters list reduced to "
 						+ this.shooters.size() + " members.");
 				if (this.shooters.isEmpty())
-					SoundManager.playSound("SFX/S_LevelClear", "level_start_count", false, false);
+					SoundManager.startSound("SFX/S_LevelClear", "level_start_count", false, false);
 			}
 		}
 		if (destroyedShip.isDestroyed()) this.shipCount--;
@@ -523,7 +523,7 @@ public class EnemyShipFormation implements Iterable<EnemyShip> {
 					this.logger.info("Shooters list reduced to "
 							+ this.shooters.size() + " members.");
 					if (this.shooters.isEmpty())
-						SoundManager.playSound("SFX/S_LevelClear", "level_start_count", false, false);
+						SoundManager.startSound("SFX/S_LevelClear", "level_start_count", false, false);
 				}
 			}
 

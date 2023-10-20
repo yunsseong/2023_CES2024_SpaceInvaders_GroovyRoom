@@ -65,7 +65,7 @@ public class SelectScreen extends Screen{
                     else gameMode= 1;
                     this.selectionCooldown.reset();}
                 if (inputManager.isKeyDown(KeyEvent.VK_SPACE)){
-                    SoundManager.playSound("SFX/S_MenuClick", "menu_select", false, false);
+                    SoundManager.startSound("SFX/S_MenuClick", "menu_select", false, false);
                     canEscape = true;
                     this.selectionCooldown.reset();
 
@@ -84,7 +84,7 @@ public class SelectScreen extends Screen{
                 }
                 if (inputManager.isKeyDown(KeyEvent.VK_SPACE)){
                     this.isRunning = false;
-                    SoundManager.playSound("SFX/S_MenuClick", "menu_select", false, false);
+                    SoundManager.startSound("SFX/S_MenuClick", "menu_select", false, false);
                 }
 
             }

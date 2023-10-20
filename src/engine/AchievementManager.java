@@ -67,8 +67,8 @@ public class AchievementManager {
 		}
 
 		LOGGER.info(achievementName + " achievement achieved!");
-		SoundManager.playSound("SFX/S_Achievement","S_achievement",false,false);
-		SoundManager.stopSound("S_achievement",2f);
+		SoundManager.startSound("SFX/S_Achievement","S_achievement",false,false);
+		SoundManager.closeSound("S_achievement",2f);
 	}
 
 	/**

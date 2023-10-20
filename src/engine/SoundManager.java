@@ -28,7 +28,7 @@ public class SoundManager {
     private static final float one = ((Math.abs(minimum)+Math.abs(maximum))/100);
     private static float master = getValue(masterVolume);
 
-    public static void playSound(String soundFilePathShort, String clipName, boolean isLoop, boolean isBgm) {
+    public static void startSound(String soundFilePathShort, String clipName, boolean isLoop, boolean isBgm) {
         String soundFilePath = "res/sound/"+soundFilePathShort+".wav";
         Clip clip = clips.get(clipName);
         if (clip != null && clip.isActive()) {
@@ -65,7 +65,7 @@ public class SoundManager {
         }).start();
     }
 
-    public static void playSound(String soundFilePathShort, String clipName, boolean isLoop, boolean isBgm, float fadeInSpeed) {
+    public static void startSound(String soundFilePathShort, String clipName, boolean isLoop, boolean isBgm, float fadeInSpeed) {
         String soundFilePath = "res/sound/"+soundFilePathShort+".wav";
         Clip clip = clips.get(clipName);
         if (clip != null && clip.isActive()) {
@@ -103,7 +103,7 @@ public class SoundManager {
         }).start();
     }
 
-    public static void stopSound(String clipName) {
+    public static void closeSound(String clipName) {
         Clip clip = clips.get(clipName);
         if (clip != null && clip.isActive()) {
             bgms.remove(clip);
@@ -112,7 +112,7 @@ public class SoundManager {
         }
     }
 
-    public static void stopSound(String clipName, float fadeoutSpeed) {
+    public static void closeSound(String clipName, float fadeoutSpeed) {
         Clip clip = clips.get(clipName);
         if (clip != null && clip.isActive()) {
             new Thread(new Runnable() {
@@ -143,6 +143,17 @@ public class SoundManager {
             }).start();
         }
     }
+
+    public static void playSound(String clipName){
+        Clip clip = clips.get(clipName);
+        if (clip != null && !clip.isActive()) clip.loop(Clip.LOOP_CONTINUOUSLY);
+    }
+
+    public static void stopSound(String clipName){
+        Clip clip = clips.get(clipName);
+        if (clip != null && clip.isActive()) clip.stop();
+    }
+
 
     private static void fadeIn(Clip clip, float fadeInSpeed) {
         new Thread(new Runnable() {
@@ -216,21 +227,21 @@ public class SoundManager {
         floatcontrol.setValue(getValue(volume));
     }
 
-    public static void playBGM(int levelNum) {
-        String soundFilePathShort = "BGM/B_Level" + Integer.toString(levelNum);
-        String clipName = "level" + Integer.toString(levelNum);
-        playSound(soundFilePathShort, clipName, true, true);
+    public static void startLevelBGM(int levelNum) {
+        String soundFilePathShort = "BGM/B_Level" + levelNum;
+        String clipName = "level" + levelNum;
+        startSound(soundFilePathShort, clipName, true, true);
     }
 
-    public static void stopBGM(int levelNum, float fadeOutSpeed) {
-        String clipName = "level" + Integer.toString(levelNum);
-        stopSound(clipName, fadeOutSpeed);
+    public static void closeLevelBGM(int levelNum, float fadeOutSpeed) {
+        String clipName = "level" + levelNum;
+        closeSound(clipName, fadeOutSpeed);
     }
 
-    public static void resetBGM(){
+    public static void closeAllLevelBGM(){
         for (int i = 0; i < 7; i++) {
-            String clipName = "level" + Integer.toString(i);
-            stopSound(clipName);
+            String clipName = "level" + i;
+            closeSound(clipName);
         }
     }
 }

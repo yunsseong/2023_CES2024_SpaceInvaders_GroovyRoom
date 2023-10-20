@@ -1,11 +1,9 @@
 package screen;
 
 import java.awt.event.KeyEvent;
-import java.util.logging.Logger;
 
 import engine.Cooldown;
 import engine.Core;
-import engine.InputManager;
 import engine.SoundManager;
 
 /**
@@ -72,7 +70,7 @@ public class TitleScreen extends Screen {
 				this.selectionCooldown.reset();
 			}
 			if (inputManager.isKeyDown(KeyEvent.VK_SPACE)){
-				SoundManager.playSound("SFX/S_MenuClick", "menu_select", false, false);
+				SoundManager.startSound("SFX/S_MenuClick", "menu_select", false, false);
 				this.isRunning = false;
 			}
 		}
