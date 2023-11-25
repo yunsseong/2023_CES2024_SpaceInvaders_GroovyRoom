@@ -1,2 +1,203 @@
-package screen;public class CustomizeScreen {
+package screen;
+
+import engine.Cooldown;
+import engine.Core;
+import engine.SoundManager;
+
+import java.awt.*;
+import java.awt.event.KeyEvent;
+
+public class CustomizeScreen extends Screen {
+	int selectedColorIndex = 0; // Default is 0 (Red)
+	private Color selectedColor;
+
+	Color[][] filledColors = new Color[10][10]; // 각 위치의 색상 정보를 저장하는 배열
+
+
+	private Color[] colors;
+
+
+	private Cooldown selectionCooldown;
+	private static final int SELECTION_TIME = 200;
+	private boolean[][] filledSpaces = new boolean[10][10];  // 각 위치가 채워졌는지 추적하는 배열
+
+
+	private int x_position;
+	private int y_position;
+
+
+	public CustomizeScreen(int width, int height, int fps) {
+
+
+		super(width, height, fps);
+		this.x_position =3;
+		this.y_position =3;
+		this.selectionCooldown = Core.getCooldown(SELECTION_TIME);
+		this.selectionCooldown.reset();
+		// Initialize the colors array with user provided colors
+
+		Color navy = new Color(0, 0, 128); // 네이비
+		Color purple = new Color(70, 38, 121); // 보라
+		Color green = new Color(34, 143, 34); // 그린
+
+		colors = new Color[]{
+				Color.RED,    // 1
+				Color.ORANGE, // 2
+				Color.YELLOW, // 3
+				green, //4
+				Color.BLUE,
+				navy,
+				purple,
+				Color.GRAY,
+				Color.WHITE
+		};
+
+		// Initialize the selected color
+		selectedColor = colors[0]; // Default is RED
+
+
+	}
+
+	public final int run() {
+		super.run();
+		return this.returnCode;
+	}
+
+	protected final void update() {
+		super.update();
+		draw();
+
+		if (this.selectionCooldown.checkFinished() && this.inputDelay.checkFinished()) {
+			if (inputManager.isKeyDown(KeyEvent.VK_1)) { // 1번 클릭 빨간색
+				setSelectedColorIndex(0);
+				this.selectionCooldown.reset();
+				System.out.println("색상 인덱스 0 선택됨"); // 로그 출력
+
+			} else if (inputManager.isKeyDown(KeyEvent.VK_2)) { // 2번 클릭 주황색
+				setSelectedColorIndex(1);
+				this.selectionCooldown.reset();
+				System.out.println("색상 인덱스 1 선택됨"); // 로그 출력
+
+			} else if (inputManager.isKeyDown(KeyEvent.VK_3)) { // 3번 클릭 노란색
+				setSelectedColorIndex(2);
+				this.selectionCooldown.reset();
+			} else if (inputManager.isKeyDown(KeyEvent.VK_4)) { // 4번 클릭 그린
+				setSelectedColorIndex(3);
+				this.selectionCooldown.reset();
+			} else if (inputManager.isKeyDown(KeyEvent.VK_5)) { // 5번 클릭 파란색
+				setSelectedColorIndex(4);
+				this.selectionCooldown.reset();
+			} else if (inputManager.isKeyDown(KeyEvent.VK_6)) { // 6번 클릭 네이비
+				setSelectedColorIndex(5);
+				this.selectionCooldown.reset();
+			} else if (inputManager.isKeyDown(KeyEvent.VK_7)) { // 7번 클릭 보라색
+				setSelectedColorIndex(6);
+				this.selectionCooldown.reset();
+			} else if (inputManager.isKeyDown(KeyEvent.VK_8)) { // 8번 클릭 회색
+				setSelectedColorIndex(7);
+				this.selectionCooldown.reset();
+			} else if (inputManager.isKeyDown(KeyEvent.VK_9)) { // 9번 클릭 흰색
+				setSelectedColorIndex(8);
+				this.selectionCooldown.reset();
+			}
+		}
+
+
+
+
+		if (this.selectionCooldown.checkFinished()
+				&& this.inputDelay.checkFinished()) {
+			if (inputManager.isKeyDown(KeyEvent.VK_UP)
+					|| inputManager.isKeyDown(KeyEvent.VK_W)) {
+				up();
+				this.selectionCooldown.reset();
+				;
+			}
+			if (inputManager.isKeyDown(KeyEvent.VK_DOWN)
+					|| inputManager.isKeyDown(KeyEvent.VK_S)) {
+				down();
+				this.selectionCooldown.reset();
+			}
+			if (inputManager.isKeyDown(KeyEvent.VK_RIGHT)
+					|| inputManager.isKeyDown(KeyEvent.VK_D)) {
+				right();
+				this.selectionCooldown.reset();
+			}
+			if (inputManager.isKeyDown(KeyEvent.VK_LEFT)
+					|| inputManager.isKeyDown(KeyEvent.VK_A)) {
+				left();
+				this.selectionCooldown.reset();
+			}
+			if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
+				/**
+				boolean adjacentFilled = // 인접한지 확인
+						(x_position > 0 && filledSpaces[x_position - 1][y_position]) || // 왼쪽 확인
+								(x_position < 9 && filledSpaces[x_position + 1][y_position]) || // 오른쪽 확인
+								(y_position > 0 && filledSpaces[x_position][y_position - 1]) || // 위쪽 확인
+								(y_position < 9 && filledSpaces[x_position][y_position + 1]);   // 아래쪽 확인
+
+				if (adjacentFilled) {
+				 **/
+					SoundManager.playSound("SFX/S_MenuClick", "menu_select", false, false);
+					filledSpaces[x_position][y_position] = !filledSpaces[x_position][y_position]; // 현재 위치를 토글
+				}
+				if (inputManager.isKeyDown(KeyEvent.VK_DELETE)) {
+					SoundManager.playSound("SFX/S_MenuClick", "menu_select", false, false);
+					filledSpaces[x_position][y_position] = false; // 현재 위치를 false로 설정
+				}
+
+			}
+	}
+
+	/**
+	 * Shifts the focus to the next menu item.
+	 */
+
+	private void up() {
+		if (this.y_position == 0)
+			this.y_position = 9;
+		else
+			this.y_position--;
+	}
+
+	private void down() {
+		if (this.y_position == 9)
+			this.y_position = 0;
+		else
+			this.y_position++;
+	}
+
+	private void right() {
+		if (this.x_position == 9)
+			this.x_position = 0;
+		else
+			this.x_position++;
+	}
+
+	private void left() {
+		if (this.x_position == 0)
+			this.x_position = 9;
+		else
+			this.x_position--;
+	}
+
+	public void draw() {
+		drawManager.initDrawing(this);
+		drawManager.drawCustomizing(this, x_position, y_position, filledSpaces); // filledSpaces를 그리는 메소드에 전달
+		drawManager.completeDrawing(this);
+	}
+	public void setSelectedColorIndex(int index) {
+		if (index >= 0 && index < colors.length) {
+			this.selectedColorIndex = index;
+			this.selectedColor = colors[index];
+		} else {
+			throw new IllegalArgumentException("Invalid index: " + index);
+		}
+	}
+
+	public int getSelectedColorIndex() {
+		return this.selectedColorIndex;
+	}
+
+
 }

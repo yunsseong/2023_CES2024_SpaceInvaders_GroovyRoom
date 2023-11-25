@@ -319,6 +319,26 @@ public final class Core {
 				break;
 			default:
 				break;
+
+				case 9: // 커스터 마이징 구현
+					LOGGER.info("Entering Customzize Screen");  // Customizie Screen
+					//  Customize
+					SoundManager.stopSound("menu", 1f);
+					currentScreen = new CustomizeScreen(width, height, FPS);
+					LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
+							+ "Customize screen at " + FPS + " fps.");
+					returnCode = frame.setScreen(currentScreen);
+					LOGGER.info("Closing CustomizeScreen screen.");
+					break;
+
+				case 10: // 커스터 마이징 스킨 선택 화면
+					LOGGER.info("Entering SelectCustom Screen");  // Customizie Skin Sceen
+					currentScreen = new SelectCustomScreen(width, height, FPS);
+					LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
+							+ " SelectCustom screen at " + FPS + " fps.");
+					returnCode = frame.setScreen(currentScreen);
+					LOGGER.info("Closing CustomizeScreen screen.");
+					break;
 			}
 
 		} while (returnCode != 0);
