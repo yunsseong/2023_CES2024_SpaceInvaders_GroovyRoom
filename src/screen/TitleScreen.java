@@ -10,21 +10,21 @@ import engine.SoundManager;
 
 /**
  * Implements the title screen.
- * 
+ *
  * @author <a href="mailto:RobertoIA1987@gmail.com">Roberto Izquierdo Amo</a>
- * 
+ *
  */
 public class TitleScreen extends Screen {
 
 	/** Milliseconds between changes in user selection. */
 	private static final int SELECTION_TIME = 200;
-	
+
 	/** Time between changes in user selection. */
 	private Cooldown selectionCooldown;
 
 	/**
 	 * Constructor, establishes the properties of the screen.
-	 * 
+	 *
 	 * @param width
 	 *            Screen width.
 	 * @param height
@@ -43,12 +43,12 @@ public class TitleScreen extends Screen {
 
 	/**
 	 * Starts the action.
-	 * 
+	 *
 	 * @return Next screen code.
 	 */
 	public final int run() {
 		super.run();
-
+		System.out.println("Returned code: " + this.returnCode);
 		return this.returnCode;
 	}
 
@@ -57,7 +57,6 @@ public class TitleScreen extends Screen {
 	 */
 	protected final void update() {
 		super.update();
-
 		draw();
 		if (this.selectionCooldown.checkFinished()
 				&& this.inputDelay.checkFinished()) {
@@ -72,6 +71,8 @@ public class TitleScreen extends Screen {
 				this.selectionCooldown.reset();
 			}
 			if (inputManager.isKeyDown(KeyEvent.VK_SPACE)){
+				if(returnCode ==7)
+					this.returnCode=10;
 				SoundManager.playSound("SFX/S_MenuClick", "menu_select", false, false);
 				this.isRunning = false;
 			}
@@ -81,36 +82,34 @@ public class TitleScreen extends Screen {
 	/**
 	 * Shifts the focus to the next menu item.
 	 */
+
 	private void nextMenuItem() {
-		if (this.returnCode == 6)
-			this.returnCode = 0;
-		else if (this.returnCode == 0)
-			this.returnCode = 2;
+		if (this.returnCode == 7)  // 마지막 메뉴 아이템 번호
+			this.returnCode = 0;  // 첫 번째 메뉴 아이템으로
 		else
 			this.returnCode++;
 	}
 
-	/**
-	 * Shifts the focus to the previous menu item.
-	 */
 	private void previousMenuItem() {
-		if (this.returnCode == 0)
-			this.returnCode = 6;
-		else if (this.returnCode == 2)
-			this.returnCode = 0;
+		if (this.returnCode == 0)  // 첫 번째 메뉴 아이템 번호
+			this.returnCode = 7;  // 마지막 메뉴 아이템으로
 		else
 			this.returnCode--;
 	}
+
+
+
+	/**
+	 * Shifts the focus to the previous menu item.
+	 */
 
 	/**
 	 * Draws the elements associated with the screen.
 	 */
 	private void draw() {
 		drawManager.initDrawing(this);
-
 		drawManager.drawTitle(this);
 		drawManager.drawMenu(this, this.returnCode);
-
 		drawManager.completeDrawing(this);
 	}
 }
