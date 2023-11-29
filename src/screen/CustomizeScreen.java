@@ -13,10 +13,8 @@ public class CustomizeScreen extends Screen {
 
 	Color[][] filledColors = new Color[10][10]; // 각 위치의 색상 정보를 저장하는 배열
 
-
+	int [][] grid = new int[10][10];
 	private Color[] colors;
-
-
 	private Cooldown selectionCooldown;
 	private static final int SELECTION_TIME = 200;
 	private boolean[][] filledSpaces = new boolean[10][10];  // 각 위치가 채워졌는지 추적하는 배열
@@ -71,13 +69,9 @@ public class CustomizeScreen extends Screen {
 			if (inputManager.isKeyDown(KeyEvent.VK_1)) { // 1번 클릭 빨간색
 				setSelectedColorIndex(0);
 				this.selectionCooldown.reset();
-				System.out.println("색상 인덱스 0 선택됨"); // 로그 출력
-
 			} else if (inputManager.isKeyDown(KeyEvent.VK_2)) { // 2번 클릭 주황색
 				setSelectedColorIndex(1);
 				this.selectionCooldown.reset();
-				System.out.println("색상 인덱스 1 선택됨"); // 로그 출력
-
 			} else if (inputManager.isKeyDown(KeyEvent.VK_3)) { // 3번 클릭 노란색
 				setSelectedColorIndex(2);
 				this.selectionCooldown.reset();
@@ -101,9 +95,6 @@ public class CustomizeScreen extends Screen {
 				this.selectionCooldown.reset();
 			}
 		}
-
-
-
 
 		if (this.selectionCooldown.checkFinished()
 				&& this.inputDelay.checkFinished()) {
@@ -130,23 +121,39 @@ public class CustomizeScreen extends Screen {
 			}
 			if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
 				/**
-				boolean adjacentFilled = // 인접한지 확인
-						(x_position > 0 && filledSpaces[x_position - 1][y_position]) || // 왼쪽 확인
-								(x_position < 9 && filledSpaces[x_position + 1][y_position]) || // 오른쪽 확인
-								(y_position > 0 && filledSpaces[x_position][y_position - 1]) || // 위쪽 확인
-								(y_position < 9 && filledSpaces[x_position][y_position + 1]);   // 아래쪽 확인
+				 boolean adjacentFilled = // 인접한지 확인
+				 (x_position > 0 && filledSpaces[x_position - 1][y_position]) || // 왼쪽 확인
+				 (x_position < 9 && filledSpaces[x_position + 1][y_position]) || // 오른쪽 확인
+				 (y_position > 0 && filledSpaces[x_position][y_position - 1]) || // 위쪽 확인
+				 (y_position < 9 && filledSpaces[x_position][y_position + 1]);   // 아래쪽 확인
 
-				if (adjacentFilled) {
+				 if (adjacentFilled) {
 				 **/
-					SoundManager.playSound("SFX/S_MenuClick", "menu_select", false, false);
-					filledSpaces[x_position][y_position] = !filledSpaces[x_position][y_position]; // 현재 위치를 토글
-				}
-				if (inputManager.isKeyDown(KeyEvent.VK_DELETE)) {
-					SoundManager.playSound("SFX/S_MenuClick", "menu_select", false, false);
-					filledSpaces[x_position][y_position] = false; // 현재 위치를 false로 설정
-				}
+				SoundManager.playSound("SFX/S_MenuClick", "menu_select", false, false);
+				filledColors[x_position][y_position] = selectedColor;
+				grid[x_position][y_position] = selectedColorIndex;
+			}
+			if (inputManager.isKeyDown(KeyEvent.VK_DELETE)) {
+				SoundManager.playSound("SFX/S_MenuClick", "menu_select", false, false);
+				filledColors[x_position][y_position] = null;
+				grid[x_position][y_position] = 0; // 색상을 삭제하면 grid의 해당 위치도 0으로 설정
 
 			}
+			if (inputManager.isKeyDown(KeyEvent.VK_ENTER)) {
+				System.out.println("현재 우주선 그래픽 배열 정보");
+				for (int i = 0; i < grid.length; i++) { // 행을 반복
+					for (int j = 0; j < grid[i].length; j++) { // 각 행의 열을 반복
+						boolean isCenter = i >= 3 && i < 7 && j >= 3 && j < 7;
+						if (isCenter) {
+							grid[i][j] = 9; // 중앙에 위치하면 9로 설정
+						}
+						System.out.print(grid[j][i] + " "); // 배열의 각 요소를 출력
+					}
+					System.out.println(); // 각 행이 끝날 때마다 줄바꿈
+				}
+				System.out.println();
+			}
+		}
 	}
 
 	/**
@@ -183,12 +190,12 @@ public class CustomizeScreen extends Screen {
 
 	public void draw() {
 		drawManager.initDrawing(this);
-		drawManager.drawCustomizing(this, x_position, y_position, filledSpaces); // filledSpaces를 그리는 메소드에 전달
+		drawManager.drawCustomizing(this, x_position, y_position, filledColors); // filledColors를 그리는 메소드에 전달
 		drawManager.completeDrawing(this);
 	}
 	public void setSelectedColorIndex(int index) {
 		if (index >= 0 && index < colors.length) {
-			this.selectedColorIndex = index;
+			this.selectedColorIndex = index +1;
 			this.selectedColor = colors[index];
 		} else {
 			throw new IllegalArgumentException("Invalid index: " + index);

@@ -168,6 +168,7 @@ public final class Core {
 				returnCode = frame.setScreen(currentScreen);
 				LOGGER.info("Closing title screen.");
 				break;
+
 			case 7:
 				// Game & score.
 				do {
