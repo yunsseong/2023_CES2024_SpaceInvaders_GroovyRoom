@@ -140,6 +140,7 @@ public class CustomizeScreen extends Screen {
 
 			}
 			if (inputManager.isKeyDown(KeyEvent.VK_ENTER)) {
+				System.out.println("현재 우주선 그래픽 배열 정보");
 				for (int i = 0; i < grid.length; i++) { // 행을 반복
 					for (int j = 0; j < grid[i].length; j++) { // 각 행의 열을 반복
 						boolean isCenter = i >= 3 && i < 7 && j >= 3 && j < 7;
