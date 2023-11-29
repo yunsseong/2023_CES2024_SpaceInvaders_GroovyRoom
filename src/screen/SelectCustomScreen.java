@@ -45,11 +45,9 @@ public class SelectCustomScreen extends Screen {
 			}
 		}
 	}
-
 	/**
 	 * Shifts the focus to the next menu item.
 	 */
-
 	private void nextBox() {
 		if (this.returnCode == 5)
 			this.returnCode = 0;
