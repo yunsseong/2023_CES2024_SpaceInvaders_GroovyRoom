@@ -78,6 +78,10 @@ public final class DrawManager {
 	private static Map<SpriteType, boolean[][]> spriteMap;
 	private Color customShipColor;
 
+
+	public final static Color[] colors = new Color[]{Color.RED, Color.ORANGE, Color.YELLOW, new Color(34, 143, 34), Color.BLUE,
+			new Color(0, 0, 128), new Color(70, 38, 121), Color.GRAY, Color.WHITE};
+
 	/**
 	 * Sprite types.
 	 */
@@ -1698,16 +1702,17 @@ public final class DrawManager {
 	}
 	public void drawCustomizing(final CustomizeScreen screen, int x_postion, int y_postion, boolean[][] filledSpaces) {
 
-		Font fontTitle = new Font("SansSerif", Font.TRUETYPE_FONT, 25);
+		Font fontTitle = new Font("SansSerif", Font.TRUETYPE_FONT, 40);
 		backBufferGraphics.setFont(fontTitle);
 		backBufferGraphics.setColor(Color.GREEN);
 
 		String title = "Customizing";
 
 		int titleWidth = backBufferGraphics.getFontMetrics().stringWidth(title);
-		int titleX = (screen.getWidth() - titleWidth) / 3;
+		int titleX = (screen.getWidth() - titleWidth) / 2; // 중앙에 위치하도록 수정
 		int titleY = 40;
 		backBufferGraphics.drawString(title, titleX, titleY);
+
 
 		int screenHeight = screen.getHeight();
 
@@ -1720,8 +1725,7 @@ public final class DrawManager {
 		Color green = new Color(34, 143, 34); // 그린
 
 
-		Color[] colors = new Color[]{Color.RED, Color.ORANGE, Color.YELLOW, green, Color.BLUE,
-				navy, purple, Color.GRAY, Color.WHITE};
+
 		int paletteStartX = 0;
 		int paletteWidth = screen.getWidth() / colors.length;
 		int paletteHeight = 50;
@@ -1732,31 +1736,29 @@ public final class DrawManager {
 		g2d.setFont(new Font("SansSerif", Font.BOLD, 24));
 
 		for (int i = 0; i < colors.length; i++) {
+			// Set color and fill rectangle
 			g2d.setColor(colors[i]);
 			g2d.fillRect(paletteStartX + i * paletteWidth, paletteStartY, paletteWidth, paletteHeight);
 
-			System.out.println("현재 입력받은 수" + screen.getSelectedColorIndex()); //
 
 
-			// If the color is currently selected, set the border to black. Otherwise, use white.
+			// Check if the color is currently selected
 			if (i == screen.getSelectedColorIndex()) {
-				System.out.println("색상 일치 "); //
-				g2d.setColor(Color.BLACK);
-				g2d.fillRect(paletteStartX + i * paletteWidth, paletteStartY, paletteWidth, paletteHeight);
-
+				// Set the border color to green for the selected color
+				g2d.setColor(Color.GREEN);
 			} else {
+				// Set the border color to white for non-selected colors
 				g2d.setColor(Color.WHITE);
 			}
+
+			// Draw the border without offset
 			g2d.setStroke(new BasicStroke(borderThickness));
-			g2d.drawRect(paletteStartX + i * paletteWidth, paletteStartY, paletteWidth, paletteHeight)	;
+			g2d.drawRect(paletteStartX + i * paletteWidth,
+					paletteStartY,
+					paletteWidth - 1, // Subtract 1 to keep the same size
+					paletteHeight - 1); // Subtract 1 to keep the same size
 
-
-			// Draw border
-			g2d.setColor(Color.WHITE);
-			g2d.setStroke(new BasicStroke(borderThickness));
-			g2d.drawRect(paletteStartX + i * paletteWidth, paletteStartY, paletteWidth, paletteHeight);
-
-			// Draw number
+			// Draw the number
 			if (colors[i] == Color.WHITE) {
 				g2d.setColor(Color.BLACK);
 			} else {
@@ -1765,7 +1767,8 @@ public final class DrawManager {
 			g2d.drawString(String.valueOf(i + 1), paletteStartX + i * paletteWidth + paletteWidth / 2, paletteStartY + paletteHeight / 2);
 		}
 
-		g2d.setColor(Color.BLACK); // Reset color
+// Set the default color for subsequent drawings
+		g2d.setColor(Color.BLACK);
 
 
 		int dotCount = 10;
@@ -1823,7 +1826,16 @@ public final class DrawManager {
 
 			backBufferGraphics.setColor(Color.WHITE);
 			backBufferGraphics.drawRect(cancelButtonX, cancelButtonY, cancelButtonWidth, cancelButtonHeight); // Draw white border
-			backBufferGraphics.drawString("Cancel", cancelButtonX + 20, cancelButtonY + 25);
+			FontMetrics fontMetrics = backBufferGraphics.getFontMetrics();
+			int textWidth = fontMetrics.stringWidth("Cancel");
+			int textHeight = fontMetrics.getHeight();
+// X 좌표 계산하여 가운데 정렬
+			int centerX = cancelButtonX + (cancelButtonWidth - textWidth) / 2;
+			int centerY = cancelButtonY + (cancelButtonHeight - textHeight) / 2 + fontMetrics.getAscent();
+
+// 그리기
+			backBufferGraphics.drawString("Cancel", centerX, centerY);
+
 
 			int buttonWidth = 100;
 			int buttonHeight = 40;
@@ -1833,7 +1845,16 @@ public final class DrawManager {
 // Draw save button
 			backBufferGraphics.setColor(Color.WHITE);
 			backBufferGraphics.drawRect(saveButtonX, saveButtonY, buttonWidth, buttonHeight); // Draw white border
-			backBufferGraphics.drawString("Save", saveButtonX + 20, saveButtonY + 25);
+
+			fontMetrics = backBufferGraphics.getFontMetrics();
+			textWidth = fontMetrics.stringWidth("Save");
+			textHeight = fontMetrics.getHeight();
+
+// Calculate the center coordinates for the text
+			centerX = saveButtonX + (buttonWidth - textWidth) / 2;
+			centerY = saveButtonY + (buttonHeight - textHeight) / 2 + fontMetrics.getAscent();
+
+			backBufferGraphics.drawString("Save", centerX, centerY);
 
 
 		}

@@ -71,12 +71,10 @@ public class CustomizeScreen extends Screen {
 			if (inputManager.isKeyDown(KeyEvent.VK_1)) { // 1번 클릭 빨간색
 				setSelectedColorIndex(0);
 				this.selectionCooldown.reset();
-				System.out.println("색상 인덱스 0 선택됨"); // 로그 출력
 
 			} else if (inputManager.isKeyDown(KeyEvent.VK_2)) { // 2번 클릭 주황색
 				setSelectedColorIndex(1);
 				this.selectionCooldown.reset();
-				System.out.println("색상 인덱스 1 선택됨"); // 로그 출력
 
 			} else if (inputManager.isKeyDown(KeyEvent.VK_3)) { // 3번 클릭 노란색
 				setSelectedColorIndex(2);
@@ -130,23 +128,23 @@ public class CustomizeScreen extends Screen {
 			}
 			if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
 				/**
-				boolean adjacentFilled = // 인접한지 확인
-						(x_position > 0 && filledSpaces[x_position - 1][y_position]) || // 왼쪽 확인
-								(x_position < 9 && filledSpaces[x_position + 1][y_position]) || // 오른쪽 확인
-								(y_position > 0 && filledSpaces[x_position][y_position - 1]) || // 위쪽 확인
-								(y_position < 9 && filledSpaces[x_position][y_position + 1]);   // 아래쪽 확인
+				 boolean adjacentFilled = // 인접한지 확인
+				 (x_position > 0 && filledSpaces[x_position - 1][y_position]) || // 왼쪽 확인
+				 (x_position < 9 && filledSpaces[x_position + 1][y_position]) || // 오른쪽 확인
+				 (y_position > 0 && filledSpaces[x_position][y_position - 1]) || // 위쪽 확인
+				 (y_position < 9 && filledSpaces[x_position][y_position + 1]);   // 아래쪽 확인
 
-				if (adjacentFilled) {
+				 if (adjacentFilled) {
 				 **/
-					SoundManager.playSound("SFX/S_MenuClick", "menu_select", false, false);
-					filledSpaces[x_position][y_position] = !filledSpaces[x_position][y_position]; // 현재 위치를 토글
-				}
-				if (inputManager.isKeyDown(KeyEvent.VK_DELETE)) {
-					SoundManager.playSound("SFX/S_MenuClick", "menu_select", false, false);
-					filledSpaces[x_position][y_position] = false; // 현재 위치를 false로 설정
-				}
-
+				SoundManager.playSound("SFX/S_MenuClick", "menu_select", false, false);
+				filledSpaces[x_position][y_position] = !filledSpaces[x_position][y_position]; // 현재 위치를 토글
 			}
+			if (inputManager.isKeyDown(KeyEvent.VK_DELETE)) {
+				SoundManager.playSound("SFX/S_MenuClick", "menu_select", false, false);
+				filledSpaces[x_position][y_position] = false; // 현재 위치를 false로 설정
+			}
+
+		}
 	}
 
 	/**
