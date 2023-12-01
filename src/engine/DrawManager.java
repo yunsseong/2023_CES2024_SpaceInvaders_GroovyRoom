@@ -3,11 +3,8 @@ package engine;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.LinkedHashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Random;
 import java.util.logging.Logger;
 import engine.AchievementManager.Achievement;
 
@@ -1616,9 +1613,20 @@ public final class DrawManager {
 		}
 	}
 
+	public void drawSprite(Graphics g, boolean[][] spriteData, Color color, int x, int y, int size) {
+		g.setColor(color);
+		for (int i = 0; i < spriteData.length; i++) {
+			for (int j = 0; j < spriteData[i].length; j++) {
+				if (spriteData[i][j]) {
+					g.fillRect(x + j*size, y + i*size, size, size);
+				}
+			}
+		}
+	}
+
 
 	public void drawSelectCustom(final Screen screen, int selectedBox) {
-
+		LinkedHashMap<boolean[][], Color> customShips = FileManager.loadCustomShips();
 		Font fontTitle = new Font("SansSerif", Font.TRUETYPE_FONT, 25);
 		backBufferGraphics.setFont(fontTitle);
 		backBufferGraphics.setColor(Color.GREEN);
@@ -1645,17 +1653,38 @@ public final class DrawManager {
 		float thickness = 2.5f;
 		g2d.setStroke(new BasicStroke(thickness));
 
-		// Draw the boxes
+		// Always draw 6 boxes regardless of the number of customShips
 		for (int i = 0; i < 6; i++) {
 			if (i == selectedBox) {
 				g2d.setColor(Color.green);
 			} else {
 				g2d.setColor(Color.WHITE);
 			}
-			backBufferGraphics.drawRect(boxX, boxY, boxSize, boxSize);
-			boxY += boxSize + boxSpacing;
+			backBufferGraphics.drawRect(boxX, boxY + i * (boxSize + boxSpacing), boxSize, boxSize);
+		}
+
+		// Draw the sprites if customShips is not null
+		if (customShips != null) {
+			int spriteSize = boxSize / Math.max(customShips.keySet().stream().mapToInt(a -> a.length).max().orElse(1), customShips.keySet().stream().mapToInt(a -> a[0].length).max().orElse(1)); // scale sprite to fit in the box
+			int index = 0;
+			for (Map.Entry<boolean[][], Color> entry : customShips.entrySet()) {
+				if (index == selectedBox) {
+					g2d.setColor(Color.green);
+				} else {
+					g2d.setColor(Color.WHITE);
+				}
+				int spriteX = boxX + (boxSize - spriteSize * entry.getKey()[0].length) / 2; // center the sprite horizontally
+				int spriteY = boxY + (boxSize - spriteSize * entry.getKey().length) / 2 + index * (boxSize + boxSpacing); // center the sprite vertically
+				drawSprite(backBufferGraphics, entry.getKey(), entry.getValue(), spriteX, spriteY, spriteSize);
+				if(++index == 6) break; // Stop drawing sprites after 6th box
+			}
 		}
 	}
+
+
+
+
+
 
 	public void showColorChooser() { // 색깔 선택 함수
 		Color selectedColor = JColorChooser.showDialog(null, "Choose a color", customShipColor);
