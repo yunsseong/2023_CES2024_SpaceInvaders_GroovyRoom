@@ -1,14 +1,13 @@
 package screen;
 
-import engine.Cooldown;
-import engine.Core;
-import engine.FileManager;
-import engine.SoundManager;
+import engine.*;
 
 import java.awt.*;
+import java.awt.List;
 import java.awt.event.KeyEvent;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.*;
+
+import static engine.DrawManager.selectedCustom;
 
 public class CustomizeScreen extends Screen {
 	int selectedColorIndex = 0; // Default is 0 (Red)
@@ -16,16 +15,17 @@ public class CustomizeScreen extends Screen {
 
 	Color[][] filledColors = new Color[10][10]; // 각 위치의 색상 정보를 저장하는 배열
 
-	boolean [][] grid = new boolean[10][10];
-	LinkedHashMap<boolean[][], Color> skins = new LinkedHashMap<>();
+
+	ArrayList<Map.Entry<boolean[][], Color>> skinList;
+	boolean [][] grid;
 	private Color[] colors;
 	private Cooldown selectionCooldown;
-	private static final int SELECTION_TIME = 200;
-	private boolean[][] filledSpaces = new boolean[10][10];  // 각 위치가 채워졌는지 추적하는 배열
+	private static final int SELECTION_TIME = 200; // 각 위치가 채워졌는지 추적하는 배열
 
 
 	private int x_position;
 	private int y_position;
+	private int index;
 
 
 	public CustomizeScreen(int width, int height, int fps) {
@@ -38,6 +38,15 @@ public class CustomizeScreen extends Screen {
 		this.selectionCooldown.reset();
 		// Initialize the colors array with user provided colors
 
+		skinList = FileManager.loadSkinList();
+		grid = skinList.get(selectedCustom).getKey();
+		System.out.println("grid = ");
+		for(int i=0; i<10; i++){
+			for(int j=0; j<10; j++){
+				System.out.print(grid[i][j]+ " ");
+			}
+			System.out.println();
+		}
 		Color navy = new Color(0, 0, 128); // 네이비
 		Color purple = new Color(70, 38, 121); // 보라
 		Color green = new Color(34, 143, 34); // 그린
@@ -67,7 +76,10 @@ public class CustomizeScreen extends Screen {
 
 	protected final void update() {
 		super.update();
+
 		draw();
+
+		if(FileManager.loadSkinList()!=null) skinList = FileManager.loadSkinList();
 
 		if (this.selectionCooldown.checkFinished() && this.inputDelay.checkFinished()) {
 			if (inputManager.isKeyDown(KeyEvent.VK_1)) { // 1번 클릭 빨간색
@@ -156,12 +168,10 @@ public class CustomizeScreen extends Screen {
 					System.out.println(); // 각 행이 끝날 때마다 줄바꿈
 				}
 				System.out.println();
-				if(FileManager.loadCustomShips()!=null) skins = FileManager.loadCustomShips();
-				skins.put(grid,colors[selectedColorIndex]);
-				FileManager.saveCustomShips(skins);
+				skinList.set(selectedCustom, new AbstractMap.SimpleEntry<>(grid, colors[selectedColorIndex]));
+				FileManager.saveSkinList(skinList);
 				this.returnCode = 1;
 				this.isRunning = false;
-				//FileManager.saveCustomShips(skins);
 			}
 		}
 	}
@@ -215,6 +225,5 @@ public class CustomizeScreen extends Screen {
 	public int getSelectedColorIndex() {
 		return this.selectedColorIndex;
 	}
-
 
 }

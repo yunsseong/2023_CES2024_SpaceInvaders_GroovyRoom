@@ -856,34 +856,36 @@ public final class FileManager {
         Files.write(playerPath, lines, StandardCharsets.UTF_8);
     }
 
-    public static void saveCustomShips(LinkedHashMap<boolean[][], Color> customShips) {
-        try {
-            FileOutputStream fos = new FileOutputStream("customShips.ser");
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(customShips);
-            oos.close();
-            fos.close();
-        } catch(IOException ioe) {
-            ioe.printStackTrace();
+    public static void saveSkinList(ArrayList<Map.Entry<boolean[][],Color>> skinList) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("CustomShip.bat"))) {
+            oos.writeObject(skinList);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-
-    public static LinkedHashMap<boolean[][], Color> loadCustomShips() {
-        LinkedHashMap<boolean[][], Color> customShips = null;
-        try {
-            FileInputStream fis = new FileInputStream("customShips.ser");
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            customShips = (LinkedHashMap<boolean[][], Color>) ois.readObject();
-            ois.close();
-            fis.close();
-        } catch(IOException ioe) {
-            ioe.printStackTrace();
-        } catch(ClassNotFoundException c) {
-            System.out.println("Class not found");
-            c.printStackTrace();
+    public static ArrayList<Map.Entry<boolean[][], Color>> loadSkinList() {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("CustomShip.bat"))) {
+            return (ArrayList<Map.Entry<boolean[][], Color>>) ois.readObject();
+        } catch (FileNotFoundException e) {
+            // 파일이 존재하지 않을 때 빈 ArrayList를 생성하여 저장
+            ArrayList<Map.Entry<boolean[][], Color>> emptyList = createEmptySkinList();
+            saveSkinList(emptyList);
+            return emptyList;
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
         }
-        return customShips;
     }
 
+    private static ArrayList<Map.Entry<boolean[][], Color>> createEmptySkinList() {
+        ArrayList<Map.Entry<boolean[][], Color>> emptyList = new ArrayList<>();
+        // 여기서 6개의 빈 Map.Entry를 추가
+        for (int i = 0; i < 6; i++) {
+            boolean[][] emptyGrid = new boolean[10][10];
+            Color emptyColor = Color.WHITE/* your default color */;
+            emptyList.add(new AbstractMap.SimpleEntry<>(emptyGrid, emptyColor));
+        }
+        return emptyList;
+    }
 }
