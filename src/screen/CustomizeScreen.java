@@ -1,11 +1,13 @@
 package screen;
 
-import engine.Cooldown;
-import engine.Core;
-import engine.SoundManager;
+import engine.*;
 
 import java.awt.*;
+import java.awt.List;
 import java.awt.event.KeyEvent;
+import java.util.*;
+
+import static engine.DrawManager.selectedCustom;
 
 public class CustomizeScreen extends Screen {
 	int selectedColorIndex = 0; // Default is 0 (Red)
@@ -13,15 +15,17 @@ public class CustomizeScreen extends Screen {
 
 	Color[][] filledColors = new Color[10][10]; // 각 위치의 색상 정보를 저장하는 배열
 
-	int [][] grid = new int[10][10];
+
+	ArrayList<Map.Entry<boolean[][], Color>> skinList;
+	boolean [][] grid;
 	private Color[] colors;
 	private Cooldown selectionCooldown;
-	private static final int SELECTION_TIME = 200;
-	private boolean[][] filledSpaces = new boolean[10][10];  // 각 위치가 채워졌는지 추적하는 배열
+	private static final int SELECTION_TIME = 200; // 각 위치가 채워졌는지 추적하는 배열
 
 
 	private int x_position;
 	private int y_position;
+	private int index;
 
 
 	public CustomizeScreen(int width, int height, int fps) {
@@ -34,6 +38,15 @@ public class CustomizeScreen extends Screen {
 		this.selectionCooldown.reset();
 		// Initialize the colors array with user provided colors
 
+		skinList = FileManager.loadSkinList();
+		grid = skinList.get(selectedCustom).getKey();
+		System.out.println("grid = ");
+		for(int i=0; i<10; i++){
+			for(int j=0; j<10; j++){
+				System.out.print(grid[i][j]+ " ");
+			}
+			System.out.println();
+		}
 		Color navy = new Color(0, 0, 128); // 네이비
 		Color purple = new Color(70, 38, 121); // 보라
 		Color green = new Color(34, 143, 34); // 그린
@@ -63,7 +76,10 @@ public class CustomizeScreen extends Screen {
 
 	protected final void update() {
 		super.update();
+
 		draw();
+
+		if(FileManager.loadSkinList()!=null) skinList = FileManager.loadSkinList();
 
 		if (this.selectionCooldown.checkFinished() && this.inputDelay.checkFinished()) {
 			if (inputManager.isKeyDown(KeyEvent.VK_1)) { // 1번 클릭 빨간색
@@ -131,12 +147,12 @@ public class CustomizeScreen extends Screen {
 				 **/
 				SoundManager.playSound("SFX/S_MenuClick", "menu_select", false, false);
 				filledColors[x_position][y_position] = selectedColor;
-				grid[x_position][y_position] = selectedColorIndex;
+				grid[x_position][y_position] = true;
 			}
 			if (inputManager.isKeyDown(KeyEvent.VK_DELETE)) {
 				SoundManager.playSound("SFX/S_MenuClick", "menu_select", false, false);
 				filledColors[x_position][y_position] = null;
-				grid[x_position][y_position] = 0; // 색상을 삭제하면 grid의 해당 위치도 0으로 설정
+				grid[x_position][y_position] = false; // 색상을 삭제하면 grid의 해당 위치도 0으로 설정
 
 			}
 			if (inputManager.isKeyDown(KeyEvent.VK_ENTER)) {
@@ -145,13 +161,17 @@ public class CustomizeScreen extends Screen {
 					for (int j = 0; j < grid[i].length; j++) { // 각 행의 열을 반복
 						boolean isCenter = i >= 3 && i < 7 && j >= 3 && j < 7;
 						if (isCenter) {
-							grid[i][j] = 9; // 중앙에 위치하면 9로 설정
+							grid[i][j] = true; // 중앙에 위치하면 9로 설정
 						}
 						System.out.print(grid[j][i] + " "); // 배열의 각 요소를 출력
 					}
 					System.out.println(); // 각 행이 끝날 때마다 줄바꿈
 				}
 				System.out.println();
+				skinList.set(selectedCustom, new AbstractMap.SimpleEntry<>(grid, colors[selectedColorIndex]));
+				FileManager.saveSkinList(skinList);
+				this.returnCode = 1;
+				this.isRunning = false;
 			}
 		}
 	}
@@ -205,6 +225,5 @@ public class CustomizeScreen extends Screen {
 	public int getSelectedColorIndex() {
 		return this.selectedColorIndex;
 	}
-
 
 }

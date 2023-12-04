@@ -1,18 +1,7 @@
 package engine;
 
-import java.awt.Font;
-import java.awt.FontFormatException;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.awt.*;
+import java.io.*;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -20,13 +9,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Date;
+import java.util.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.logging.Logger;
 
 import engine.DrawManager.SpriteType;
@@ -427,6 +413,7 @@ public final class FileManager {
             inputStream = FileManager.class.getClassLoader()
                     .getResourceAsStream("settings");
             reader = new BufferedReader(new InputStreamReader(inputStream));
+            System.out.println(reader);
 
             Settings Setting1 = null;
             String name = reader.readLine();
@@ -806,64 +793,99 @@ public final class FileManager {
             throw new NumberFormatException("Invalid value in current player file");
         }
 
-		return player;
-	}
-	public void updatePlayerItem(int itemNumber) throws IOException {
-		// Get the path to the JAR file
-		String jarPath = FileManager.class.getProtectionDomain()
-				.getCodeSource().getLocation().getPath();
-		jarPath = URLDecoder.decode(jarPath, StandardCharsets.UTF_8.toString());
+        return player;
+    }
 
-		// Construct the path to the player data file
-		Path playerPath = Paths.get(new File(jarPath).getParent(), "currentPlayer");
+    public void updatePlayerItem(int itemNumber) throws IOException {
+        // Get the path to the JAR file
+        String jarPath = FileManager.class.getProtectionDomain()
+                .getCodeSource().getLocation().getPath();
+        jarPath = URLDecoder.decode(jarPath, StandardCharsets.UTF_8.toString());
 
-		// Check if the player data file exists
-		if (!Files.exists(playerPath)) {
-			logger.warning("Player file not found at: " + playerPath);
-			throw new FileNotFoundException("Player file not found at: " + playerPath);
-		}
+        // Construct the path to the player data file
+        Path playerPath = Paths.get(new File(jarPath).getParent(), "currentPlayer");
 
-		// Read the lines from the player data file
-		List<String> lines = Files.readAllLines(playerPath, StandardCharsets.UTF_8);
-		String itemsString = lines.get(3);
-		List<Boolean> items = convertStringToBooleanList(itemsString);
+        // Check if the player data file exists
+        if (!Files.exists(playerPath)) {
+            logger.warning("Player file not found at: " + playerPath);
+            throw new FileNotFoundException("Player file not found at: " + playerPath);
+        }
 
-		if (!items.get(itemNumber)){
-			items.set(itemNumber, true);
-		}
+        // Read the lines from the player data file
+        List<String> lines = Files.readAllLines(playerPath, StandardCharsets.UTF_8);
+        String itemsString = lines.get(3);
+        List<Boolean> items = convertStringToBooleanList(itemsString);
 
-		StringBuilder itemResultBuilder = new StringBuilder();
-		for (int i = 0; i < items.size(); i++) {
-			itemResultBuilder.append(items.get(i).toString());
-			if (i < items.size() - 1) {  // If it's not the last item, append ", "
-				itemResultBuilder.append(", ");
-			}
-		}
-		String itemResult = itemResultBuilder.toString();
+        if (!items.get(itemNumber)) {
+            items.set(itemNumber, true);
+        }
 
-		lines.set(3, itemResult);
-		Files.write(playerPath, lines, StandardCharsets.UTF_8);
-	}
-	public void resetPlayerItem() throws IOException {
-		// Get the path to the JAR file
-		String jarPath = FileManager.class.getProtectionDomain()
-				.getCodeSource().getLocation().getPath();
-		jarPath = URLDecoder.decode(jarPath, StandardCharsets.UTF_8.toString());
+        StringBuilder itemResultBuilder = new StringBuilder();
+        for (int i = 0; i < items.size(); i++) {
+            itemResultBuilder.append(items.get(i).toString());
+            if (i < items.size() - 1) {  // If it's not the last item, append ", "
+                itemResultBuilder.append(", ");
+            }
+        }
+        String itemResult = itemResultBuilder.toString();
 
-		// Construct the path to the player data file
-		Path playerPath = Paths.get(new File(jarPath).getParent(), "currentPlayer");
+        lines.set(3, itemResult);
+        Files.write(playerPath, lines, StandardCharsets.UTF_8);
+    }
 
-		// Check if the player data file exists
-		if (!Files.exists(playerPath)) {
-			logger.warning("Player file not found at: " + playerPath);
-			throw new FileNotFoundException("Player file not found at: " + playerPath);
-		}
+    public void resetPlayerItem() throws IOException {
+        // Get the path to the JAR file
+        String jarPath = FileManager.class.getProtectionDomain()
+                .getCodeSource().getLocation().getPath();
+        jarPath = URLDecoder.decode(jarPath, StandardCharsets.UTF_8.toString());
 
-		// Read the lines from the player data file
-		List<String> lines = Files.readAllLines(playerPath, StandardCharsets.UTF_8);
+        // Construct the path to the player data file
+        Path playerPath = Paths.get(new File(jarPath).getParent(), "currentPlayer");
+
+        // Check if the player data file exists
+        if (!Files.exists(playerPath)) {
+            logger.warning("Player file not found at: " + playerPath);
+            throw new FileNotFoundException("Player file not found at: " + playerPath);
+        }
+
+        // Read the lines from the player data file
+        List<String> lines = Files.readAllLines(playerPath, StandardCharsets.UTF_8);
 
 
-		lines.set(3, "false, false, false");
-		Files.write(playerPath, lines, StandardCharsets.UTF_8);
-	}
+        lines.set(3, "false, false, false");
+        Files.write(playerPath, lines, StandardCharsets.UTF_8);
+    }
+
+    public static void saveSkinList(ArrayList<Map.Entry<boolean[][],Color>> skinList) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("CustomShip.bat"))) {
+            oos.writeObject(skinList);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static ArrayList<Map.Entry<boolean[][], Color>> loadSkinList() {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("CustomShip.bat"))) {
+            return (ArrayList<Map.Entry<boolean[][], Color>>) ois.readObject();
+        } catch (FileNotFoundException e) {
+            // 파일이 존재하지 않을 때 빈 ArrayList를 생성하여 저장
+            ArrayList<Map.Entry<boolean[][], Color>> emptyList = createEmptySkinList();
+            saveSkinList(emptyList);
+            return emptyList;
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private static ArrayList<Map.Entry<boolean[][], Color>> createEmptySkinList() {
+        ArrayList<Map.Entry<boolean[][], Color>> emptyList = new ArrayList<>();
+        // 여기서 6개의 빈 Map.Entry를 추가
+        for (int i = 0; i < 6; i++) {
+            boolean[][] emptyGrid = new boolean[10][10];
+            Color emptyColor = Color.WHITE/* your default color */;
+            emptyList.add(new AbstractMap.SimpleEntry<>(emptyGrid, emptyColor));
+        }
+        return emptyList;
+    }
 }
