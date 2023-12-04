@@ -18,6 +18,7 @@ public class TitleScreen extends Screen {
 
 	/** Milliseconds between changes in user selection. */
 	private static final int SELECTION_TIME = 200;
+	public static String menuSelection;
 
 	/** Time between changes in user selection. */
 	private Cooldown selectionCooldown;
@@ -71,10 +72,17 @@ public class TitleScreen extends Screen {
 				this.selectionCooldown.reset();
 			}
 			if (inputManager.isKeyDown(KeyEvent.VK_SPACE)){
-				if(returnCode ==7)
-					this.returnCode=10;
 				SoundManager.playSound("SFX/S_MenuClick", "menu_select", false, false);
 				this.isRunning = false;
+				switch (this.returnCode) {
+					case 2:  // '게임 시작' 메뉴를 선택한 경우
+						menuSelection = "gameplay";
+						break;
+					case 7: // '커스터 마이징 메뉴 선택한 경우 '
+						this.returnCode=10;
+						menuSelection = "customization";
+
+				}
 			}
 		}
 	}

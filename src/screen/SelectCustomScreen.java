@@ -7,13 +7,14 @@ import engine.SoundManager;
 
 import java.awt.event.KeyEvent;
 
+import static screen.TitleScreen.menuSelection;
+
 public class SelectCustomScreen extends Screen {
 	private Cooldown selectionCooldown;
 	private static final int SELECTION_TIME = 100;
 
 	public SelectCustomScreen(int width, int height, int FPS) {
 		super(width, height, FPS);
-		this.returnCode = 0;
 		this.selectionCooldown = Core.getCooldown(SELECTION_TIME);
 		this.selectionCooldown.reset();
 	}
@@ -31,20 +32,28 @@ public class SelectCustomScreen extends Screen {
 			if (inputManager.isKeyDown(KeyEvent.VK_UP)
 					|| inputManager.isKeyDown(KeyEvent.VK_W)) {
 				previousBox();
-				this.selectionCooldown.reset();;
-			}
-			else if (inputManager.isKeyDown(KeyEvent.VK_DOWN)
+				this.selectionCooldown.reset();
+				;
+			} else if (inputManager.isKeyDown(KeyEvent.VK_DOWN)
 					|| inputManager.isKeyDown(KeyEvent.VK_S)) {
 				nextBox();
 				this.selectionCooldown.reset();
-			}
-			else if (inputManager.isKeyDown(KeyEvent.VK_SPACE)){
-				this.returnCode=9;
+			} else if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
 				SoundManager.playSound("SFX/S_MenuClick", "menu_select", false, false);
-				this.isRunning = false;
-			}
-			else if (inputManager.isKeyDown(KeyEvent.VK_ESCAPE)){
-				this.returnCode=1;
+				if ("customization".equals(menuSelection)) {
+					// '커스터마이징' 메뉴를 선택한 경우의 처리
+					this.returnCode = 9;
+					this.isRunning = false;
+					System.out.println("넘기는 값 Returned code: " + this.returnCode);
+
+				} else if ("gameplay".equals(menuSelection)) {
+					// '게임 시작' 메뉴를 선택한 경우의 처리
+					this.returnCode = 7;
+					this.isRunning = false;
+					System.out.println("넘기는 값 Returned code: " + this.returnCode);
+				}
+			} else if (inputManager.isKeyDown(KeyEvent.VK_ESCAPE)) {
+				this.returnCode = 1;
 				this.isRunning = false;
 			}
 		}

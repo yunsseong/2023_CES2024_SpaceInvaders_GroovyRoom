@@ -57,6 +57,7 @@ public class SkinSelectionScreen extends Screen{
                 SoundManager.playSound("SFX/S_MenuClick", "menu_select", false, false);
                 this.isRunning = false;
             }
+
         }
     }
 

@@ -30,7 +30,6 @@ public class CustomizeScreen extends Screen {
 
 	public CustomizeScreen(int width, int height, int fps) {
 
-
 		super(width, height, fps);
 		this.x_position =3;
 		this.y_position =3;
@@ -68,7 +67,6 @@ public class CustomizeScreen extends Screen {
 
 
 	}
-
 	public final int run() {
 		super.run();
 		return this.returnCode;
@@ -111,14 +109,12 @@ public class CustomizeScreen extends Screen {
 				this.selectionCooldown.reset();
 			}
 		}
-
 		if (this.selectionCooldown.checkFinished()
 				&& this.inputDelay.checkFinished()) {
 			if (inputManager.isKeyDown(KeyEvent.VK_UP)
 					|| inputManager.isKeyDown(KeyEvent.VK_W)) {
 				up();
 				this.selectionCooldown.reset();
-				;
 			}
 			else if (inputManager.isKeyDown(KeyEvent.VK_DOWN)
 					|| inputManager.isKeyDown(KeyEvent.VK_S)) {
@@ -138,7 +134,6 @@ public class CustomizeScreen extends Screen {
 			else if(inputManager.isKeyDown(KeyEvent.VK_ESCAPE)){
 				this.returnCode = 10;
 				this.isRunning = false;
-
 			}
 			else if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
 				/**

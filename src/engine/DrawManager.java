@@ -1571,7 +1571,6 @@ public final class DrawManager {
                     / 8 * 5 + fontRegularMetrics.getHeight() * 2);
         }
     }
-
     /**
      * Draws achievement information on the screen based on the achievements map.
      *
@@ -1707,7 +1706,6 @@ public final class DrawManager {
         if (loadedList != null && selectedCustom < loadedList.size()) {
             customShip = loadedList.get(selectedCustom);
         }
-
         boolean[][] isFilled = new boolean[10][10];
         Color color = Color.WHITE;
         if (customShip == null) {
@@ -1721,7 +1719,6 @@ public final class DrawManager {
             isFilled = customShip.getKey();
             color = customShip.getValue();
         }
-
 
         Graphics2D g2d = (Graphics2D) backBufferGraphics;
         g2d.setFont(new Font("SansSerif", Font.BOLD, 24));
@@ -1746,7 +1743,6 @@ public final class DrawManager {
                     paletteStartY,
                     paletteWidth - 1, // Subtract 1 to keep the same size
                     paletteHeight - 1); // Subtract 1 to keep the same size
-
             // Draw the number
             if (colors[i] == Color.WHITE) {
                 g2d.setColor(Color.BLACK);
@@ -1768,21 +1764,14 @@ public final class DrawManager {
 
         int startX = (screen.getWidth() - totalWidth) / 2;
         int startY = (screen.getHeight() - totalHeight) / 2 - 50;
-
         for (int i = 0; i < dotCount; i++) {
             for (int j = 0; j < dotCount; j++) {
                 int boxX = startX + i * boxSize;
                 int boxY = startY + j * boxSize;
 
-                if (filledColors[i][j] != null) {  // If this space is fi
+                if (filledColors[i][j] != null) {  // If this space is filled
                     g2d.setColor(filledColors[i][j]);
                     g2d.fillRect(boxX, boxY, boxSize, boxSize);
-
-                } else if (i == x_postion && j == y_postion) {
-                    g2d.setColor(Color.WHITE);
-                    g2d.fillRect(boxX, boxY, boxSize, boxSize);
-                    g2d.setColor(Color.RED);
-                    g2d.drawRect(boxX, boxY, boxSize, boxSize);
                 } else {
                     if (isFilled[i][j]) {
                         // Fill center box with color
@@ -1793,16 +1782,22 @@ public final class DrawManager {
                         g2d.setColor(Color.WHITE);
                         g2d.drawRect(boxX, boxY, boxSize, boxSize);
                     }
-
                     // Draw dot at the center of the box
                     int dotX = boxX + boxSize / 2 - dotRadius;
                     int dotY = boxY + boxSize / 2 - dotRadius;
                     g2d.fillOval(dotX, dotY, dotRadius * 2, dotRadius * 2);
                 }
+                if (i == x_postion && j == y_postion) {
+                    g2d.setColor(Color.GREEN);
+                    g2d.setStroke(new BasicStroke(3));
+                    g2d.drawRect(boxX, boxY, boxSize, boxSize);
+                    g2d.setStroke(new BasicStroke(1));
+                }
             }
+        }
 
-            int gap = 20;
 
+        int gap = 20;
             // Draw cancel button
             int cancelButtonWidth = 170;
             int cancelButtonHeight = 40;
@@ -1844,6 +1839,4 @@ public final class DrawManager {
 
         }
     }
-}
-
 

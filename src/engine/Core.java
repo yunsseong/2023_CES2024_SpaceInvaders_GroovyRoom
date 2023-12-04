@@ -19,7 +19,6 @@ import screen.*;
  *
  */
 public final class Core {
-
 	/** Width of current screen. */
 	private static final int WIDTH = 448;
 	/** Height of current screen. */
@@ -151,175 +150,175 @@ public final class Core {
 			else gameState = new GameState(1, 0, MAX_LIVES, MAX_LIVES, 0, 0, 0, 0);
 
 			switch (returnCode) {
-                case 0:
-                    currentScreen = new LoginScreen(width, height, FPS);LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
-                        + " title screen at " + FPS + " fps.");
-                    returnCode = frame.setScreen(currentScreen);
-                    LOGGER.info("Closing title screen.");
-                    break;
-			case 1:
-				// Main menu.
-				SoundManager.resetBGM();
-				SoundManager.stopSound("selection",2f);
-				SoundManager.playSound("BGM/B_Main_a", "menu", true, true, 2f);
-				currentScreen = new TitleScreen(width, height, FPS);
-				LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
+				case 0:
+					currentScreen = new LoginScreen(width, height, FPS);LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
 						+ " title screen at " + FPS + " fps.");
-				returnCode = frame.setScreen(currentScreen);
-				LOGGER.info("Closing title screen.");
-				break;
-
-			case 7:
-				// Game & score.
-				do {
-					SoundManager.stopSound("selection",2f);
-					// One extra live every few levels.
-					int mode = gameState.getMode();
-					boolean bonusLife = gameState.getLevel() % EXTRA_LIFE_FRECUENCY == 0;
-
-					if (mode == 1) {
-						// 1P mode
-						bonusLife = bonusLife && gameState.getLivesRemaining1p() < MAX_LIVES;
-					} else {
-						// 2P mode (Give bonusLife if either player has less than max lives.)
-						bonusLife = bonusLife &&
-								(gameState.getLivesRemaining1p() < MAX_LIVES
-										|| gameState.getLivesRemaining2p() < MAX_LIVES);
-					}
-
-					currentScreen = new GameScreen(gameState,
-							gameSettings.get(gameState.getLevel() - 1),
-							bonusLife, width, height, FPS);
-
+					returnCode = frame.setScreen(currentScreen);
+					LOGGER.info("Closing title screen.");
+					break;
+				case 1:
+					// Main menu.
 					SoundManager.resetBGM();
-					SoundManager.playBGM(gameState.getLevel());
-
+					SoundManager.stopSound("selection",2f);
+					SoundManager.playSound("BGM/B_Main_a", "menu", true, true, 2f);
+					currentScreen = new TitleScreen(width, height, FPS);
 					LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
 							+ " title screen at " + FPS + " fps.");
 					returnCode = frame.setScreen(currentScreen);
-					LOGGER.info("Closing Game screen.");
+					LOGGER.info("Closing title screen.");
+					break;
+
+				case 7:
+					// Game & score.
+					do {
+						SoundManager.stopSound("selection",2f);
+						// One extra live every few levels.
+						int mode = gameState.getMode();
+						boolean bonusLife = gameState.getLevel() % EXTRA_LIFE_FRECUENCY == 0;
+
+						if (mode == 1) {
+							// 1P mode
+							bonusLife = bonusLife && gameState.getLivesRemaining1p() < MAX_LIVES;
+						} else {
+							// 2P mode (Give bonusLife if either player has less than max lives.)
+							bonusLife = bonusLife &&
+									(gameState.getLivesRemaining1p() < MAX_LIVES
+											|| gameState.getLivesRemaining2p() < MAX_LIVES);
+						}
+
+						currentScreen = new GameScreen(gameState,
+								gameSettings.get(gameState.getLevel() - 1),
+								bonusLife, width, height, FPS);
+
+						SoundManager.resetBGM();
+						SoundManager.playBGM(gameState.getLevel());
+
+						LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
+								+ " title screen at " + FPS + " fps.");
+						returnCode = frame.setScreen(currentScreen);
+						LOGGER.info("Closing Game screen.");
+
+						if (returnCode == 1) break;
+
+						if (mode == 1) {
+							gameState = ((GameScreen) currentScreen).getGameState1p();
+							gameState = new GameState(gameState.getLevel() + 1,
+									gameState.getScore(),
+									gameState.getLivesRemaining1p(),
+									gameState.getBulletsShot1(),
+									gameState.getShipsDestroyed());
+						} else {
+							gameState = ((GameScreen) currentScreen).getGameState2p();
+							gameState = new GameState(gameState.getLevel() + 1,
+									gameState.getScore(),
+									gameState.getLivesRemaining1p(),
+									gameState.getLivesRemaining2p(),
+									gameState.getBulletsShot1(),
+									gameState.getBulletsShot2(),
+									gameState.getShipsDestroyed(),
+									gameState.getShipsDestroyed2());
+						}
+						AchievementManager.getInstance().checkAchievements(gameState);
+						if (((gameState.getMode() == 1 && gameState.getLivesRemaining1p() > 0)
+								|| (gameState.getMode() == 2 && gameState.getLivesRemaining1p() > 0 && gameState.getLivesRemaining2p() > 0))
+								&& gameState.getLevel() <= NUM_LEVELS) {
+							currentScreen = new ClearScreen(width, height, FPS, gameState);
+							LOGGER.info("Starting 	" + WIDTH + "x" + HEIGHT
+									+ " clear screen at " + FPS + " fps.");
+							returnCode = frame.setScreen(currentScreen);
+							LOGGER.info("Closing clear screen.");
+							if (returnCode == 1) break;
+						}
+					} while ((gameState.getMode() == 1 && gameState.getLivesRemaining1p() > 0)
+							|| (gameState.getMode() == 2 && (gameState.getLivesRemaining1p() > 0 || gameState.getLivesRemaining2p() > 0))
+							&& gameState.getLevel() <= NUM_LEVELS);
 
 					if (returnCode == 1) break;
 
-					if (mode == 1) {
-						gameState = ((GameScreen) currentScreen).getGameState1p();
-						gameState = new GameState(gameState.getLevel() + 1,
-								gameState.getScore(),
-								gameState.getLivesRemaining1p(),
-								gameState.getBulletsShot1(),
-								gameState.getShipsDestroyed());
+					if (gameState.getMode() == 1) {
+						LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
+								+ " score screen at " + FPS + " fps, with a score of "
+								+ gameState.getScore() + ", "
+								+ gameState.getLivesRemaining1p() + " lives remaining for 1p, "
+								+ gameState.getBulletsShot1() + " bullets shot and "
+								+ gameState.getShipsDestroyed() + " ships destroyed.");
 					} else {
-						gameState = ((GameScreen) currentScreen).getGameState2p();
-						gameState = new GameState(gameState.getLevel() + 1,
-								gameState.getScore(),
-								gameState.getLivesRemaining1p(),
-								gameState.getLivesRemaining2p(),
-								gameState.getBulletsShot1(),
-								gameState.getBulletsShot2(),
-								gameState.getShipsDestroyed(),
-								gameState.getShipsDestroyed2());
+						LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
+								+ " score screen at " + FPS + " fps, with a score of "
+								+ gameState.getScore() + ", "
+								+ gameState.getLivesRemaining1p() + " lives remaining for 1p, "
+								+ gameState.getLivesRemaining2p() + " lives remaining for 2p, "
+								+ gameState.getBulletsShot1() + " bullets shot by 1p and "
+								+ gameState.getBulletsShot2() + " bullets shot by 2p and "
+								+ gameState.getShipsDestroyed() + " ships destroyed.");
 					}
-					AchievementManager.getInstance().checkAchievements(gameState);
-					if (((gameState.getMode() == 1 && gameState.getLivesRemaining1p() > 0)
-							|| (gameState.getMode() == 2 && gameState.getLivesRemaining1p() > 0 && gameState.getLivesRemaining2p() > 0))
-							&& gameState.getLevel() <= NUM_LEVELS) {
-						currentScreen = new ClearScreen(width, height, FPS, gameState);
-						LOGGER.info("Starting 	" + WIDTH + "x" + HEIGHT
-								+ " clear screen at " + FPS + " fps.");
-						returnCode = frame.setScreen(currentScreen);
-						LOGGER.info("Closing clear screen.");
-						if (returnCode == 1) break;
-					}
-				} while ((gameState.getMode() == 1 && gameState.getLivesRemaining1p() > 0)
-						|| (gameState.getMode() == 2 && (gameState.getLivesRemaining1p() > 0 || gameState.getLivesRemaining2p() > 0))
-						&& gameState.getLevel() <= NUM_LEVELS);
-
-				if (returnCode == 1) break;
-
-				if (gameState.getMode() == 1) {
+					currentScreen = new ScoreScreen(width, height, FPS, gameState);
+					SoundManager.resetBGM();
+					SoundManager.stopSound("ship_moving");
+					SoundManager.playSound("BGM/B_Gameover", "B_gameover", true, true, 2f);
+					SoundManager.playSound("SFX/S_Gameover","S_gameover",false,false);
+					returnCode = frame.setScreen(currentScreen);
+					SoundManager.stopSound("B_gameover",2f);
+					LOGGER.info("Closing score screen.");
+					break;
+				case 3:
+					// High scores.
+					SoundManager.stopSound("menu",1f);
+					SoundManager.playSound("BGM/B_HighScore", "highscore", true, true);
+					currentScreen = new HighScoreScreen(width, height, FPS);
 					LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
-						+ " score screen at " + FPS + " fps, with a score of "
-						+ gameState.getScore() + ", "
-						+ gameState.getLivesRemaining1p() + " lives remaining for 1p, "
-						+ gameState.getBulletsShot1() + " bullets shot and "
-						+ gameState.getShipsDestroyed() + " ships destroyed.");
-				} else {
+							+ " high score screen at " + FPS + " fps.");
+					returnCode = frame.setScreen(currentScreen);
+					LOGGER.info("Closing high score screen.");
+					SoundManager.stopSound("highscore",2f);
+					break;
+				case 4:
+					// Shop
+					currentScreen = new ItemShopScreen(width,height, FPS);
 					LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
-							+ " score screen at " + FPS + " fps, with a score of "
-							+ gameState.getScore() + ", "
-							+ gameState.getLivesRemaining1p() + " lives remaining for 1p, "
-							+ gameState.getLivesRemaining2p() + " lives remaining for 2p, "
-							+ gameState.getBulletsShot1() + " bullets shot by 1p and "
-							+ gameState.getBulletsShot2() + " bullets shot by 2p and "
-							+ gameState.getShipsDestroyed() + " ships destroyed.");
-				}
-				currentScreen = new ScoreScreen(width, height, FPS, gameState);
-				SoundManager.resetBGM();
-				SoundManager.stopSound("ship_moving");
-				SoundManager.playSound("BGM/B_Gameover", "B_gameover", true, true, 2f);
-				SoundManager.playSound("SFX/S_Gameover","S_gameover",false,false);
-				returnCode = frame.setScreen(currentScreen);
-				SoundManager.stopSound("B_gameover",2f);
-				LOGGER.info("Closing score screen.");
-				break;
-			case 3:
-				// High scores.
-				SoundManager.stopSound("menu",1f);
-				SoundManager.playSound("BGM/B_HighScore", "highscore", true, true);
-				currentScreen = new HighScoreScreen(width, height, FPS);
-				LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
-						+ " high score screen at " + FPS + " fps.");
-				returnCode = frame.setScreen(currentScreen);
-				LOGGER.info("Closing high score screen.");
-				SoundManager.stopSound("highscore",2f);
-				break;
-			case 4:
-				// Shop
-				currentScreen = new ItemShopScreen(width,height, FPS);
-				LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
-						+ " item shop screen at " + FPS + " fps.");
-				returnCode = frame.setScreen(currentScreen);
-				LOGGER.info("Closing item shop screen");
-				break;
-			case 5:
-				// Setting.
-				currentScreen = new SettingScreen(width, height, FPS);
-				LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
-						+ " setting screen at " + FPS + " fps.");
-				returnCode = frame.setScreen(currentScreen);
-				LOGGER.info("Closing setting screen.");
-				break;
-			case 6:
-				//  Achievement.
-				SoundManager.stopSound("menu",1f);
-				SoundManager.playSound("BGM/B_Achieve", "achievement", true, true);
-				currentScreen = new AchievementScreen(width, height, FPS);
-				LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
-						+ " achievement screen at " + FPS + " fps.");
-				returnCode = frame.setScreen(currentScreen);
-				LOGGER.info("Closing Achievement screen.");
-				SoundManager.stopSound("achievement",2f);
-				break;
-			case 2:
-				// Select Mode.
-				SoundManager.stopSound("menu",2f);
-				SoundManager.playSound("BGM/B_Main_c", "selection", true, true);
-				currentScreen = new SelectScreen(width, height, FPS);
-				LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
-						+ " select screen at " + FPS + " fps.");
-				returnCode = frame.setScreen(currentScreen);
-				LOGGER.info("Closing select screen.");
-				break;
-			case 8:
-				// Select Skin.
-				currentScreen = new SkinSelectionScreen(width, height, FPS);
-				LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
-						+ " Skin Selection screen at " + FPS + " fps.");
-				returnCode = frame.setScreen(currentScreen);
-				LOGGER.info("Closing SkinSelection screen.");
-				break;
-			default:
-				break;
+							+ " item shop screen at " + FPS + " fps.");
+					returnCode = frame.setScreen(currentScreen);
+					LOGGER.info("Closing item shop screen");
+					break;
+				case 5:
+					// Setting.
+					currentScreen = new SettingScreen(width, height, FPS);
+					LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
+							+ " setting screen at " + FPS + " fps.");
+					returnCode = frame.setScreen(currentScreen);
+					LOGGER.info("Closing setting screen.");
+					break;
+				case 6:
+					//  Achievement.
+					SoundManager.stopSound("menu",1f);
+					SoundManager.playSound("BGM/B_Achieve", "achievement", true, true);
+					currentScreen = new AchievementScreen(width, height, FPS);
+					LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
+							+ " achievement screen at " + FPS + " fps.");
+					returnCode = frame.setScreen(currentScreen);
+					LOGGER.info("Closing Achievement screen.");
+					SoundManager.stopSound("achievement",2f);
+					break;
+				case 2:
+					// Select Mode.
+					SoundManager.stopSound("menu",2f);
+					SoundManager.playSound("BGM/B_Main_c", "selection", true, true);
+					currentScreen = new SelectScreen(width, height, FPS);
+					LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
+							+ " select screen at " + FPS + " fps.");
+					returnCode = frame.setScreen(currentScreen);
+					LOGGER.info("Closing select screen.");
+					break;
+				case 8:
+					// Select Skin.
+					currentScreen = new SkinSelectionScreen(width, height, FPS);
+					LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
+							+ " Skin Selection screen at " + FPS + " fps.");
+					returnCode = 10;
+					LOGGER.info("Closing SkinSelection screen.");
+					break;
+				default:
+					break;
 
 				case 9: // 커스터 마이징 구현
 					LOGGER.info("Entering Customzize Screen");  // Customizie Screen
