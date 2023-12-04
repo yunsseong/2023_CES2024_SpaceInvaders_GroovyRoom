@@ -40,12 +40,12 @@ public class CustomizeScreen extends Screen {
 
 		skinList = FileManager.loadSkinList();
 		grid = skinList.get(selectedCustom).getKey();
-		System.out.println("grid = ");
 		for(int i=0; i<10; i++){
 			for(int j=0; j<10; j++){
-				System.out.print(grid[i][j]+ " ");
+				boolean isCenter = i >= 3 && i < 7 && j >= 3 && j < 7;
+				if(isCenter) filledColors[i][j] = Color.WHITE;
+				if(filledColors[i][j]!=null) grid[i][j] = true;
 			}
-			System.out.println();
 		}
 		Color navy = new Color(0, 0, 128); // 네이비
 		Color purple = new Color(70, 38, 121); // 보라
@@ -120,22 +120,27 @@ public class CustomizeScreen extends Screen {
 				this.selectionCooldown.reset();
 				;
 			}
-			if (inputManager.isKeyDown(KeyEvent.VK_DOWN)
+			else if (inputManager.isKeyDown(KeyEvent.VK_DOWN)
 					|| inputManager.isKeyDown(KeyEvent.VK_S)) {
 				down();
 				this.selectionCooldown.reset();
 			}
-			if (inputManager.isKeyDown(KeyEvent.VK_RIGHT)
+			else if (inputManager.isKeyDown(KeyEvent.VK_RIGHT)
 					|| inputManager.isKeyDown(KeyEvent.VK_D)) {
 				right();
 				this.selectionCooldown.reset();
 			}
-			if (inputManager.isKeyDown(KeyEvent.VK_LEFT)
+			else if (inputManager.isKeyDown(KeyEvent.VK_LEFT)
 					|| inputManager.isKeyDown(KeyEvent.VK_A)) {
 				left();
 				this.selectionCooldown.reset();
 			}
-			if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
+			else if(inputManager.isKeyDown(KeyEvent.VK_ESCAPE)){
+				this.returnCode = 10;
+				this.isRunning = false;
+
+			}
+			else if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
 				/**
 				 boolean adjacentFilled = // 인접한지 확인
 				 (x_position > 0 && filledSpaces[x_position - 1][y_position]) || // 왼쪽 확인

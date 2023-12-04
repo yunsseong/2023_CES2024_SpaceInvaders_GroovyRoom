@@ -33,14 +33,18 @@ public class SelectCustomScreen extends Screen {
 				previousBox();
 				this.selectionCooldown.reset();;
 			}
-			if (inputManager.isKeyDown(KeyEvent.VK_DOWN)
+			else if (inputManager.isKeyDown(KeyEvent.VK_DOWN)
 					|| inputManager.isKeyDown(KeyEvent.VK_S)) {
 				nextBox();
 				this.selectionCooldown.reset();
 			}
-			if (inputManager.isKeyDown(KeyEvent.VK_SPACE)){
+			else if (inputManager.isKeyDown(KeyEvent.VK_SPACE)){
 				this.returnCode=9;
 				SoundManager.playSound("SFX/S_MenuClick", "menu_select", false, false);
+				this.isRunning = false;
+			}
+			else if (inputManager.isKeyDown(KeyEvent.VK_ESCAPE)){
+				this.returnCode=1;
 				this.isRunning = false;
 			}
 		}
