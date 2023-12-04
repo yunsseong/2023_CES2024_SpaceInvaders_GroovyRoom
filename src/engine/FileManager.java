@@ -413,7 +413,6 @@ public final class FileManager {
             inputStream = FileManager.class.getClassLoader()
                     .getResourceAsStream("settings");
             reader = new BufferedReader(new InputStreamReader(inputStream));
-            System.out.println(reader);
 
             Settings Setting1 = null;
             String name = reader.readLine();

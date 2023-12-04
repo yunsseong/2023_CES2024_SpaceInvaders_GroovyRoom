@@ -161,18 +161,6 @@ public class CustomizeScreen extends Screen {
 
 			}
 			if (inputManager.isKeyDown(KeyEvent.VK_ENTER)) {
-				System.out.println("현재 우주선 그래픽 배열 정보");
-				for (int i = 0; i < grid.length; i++) { // 행을 반복
-					for (int j = 0; j < grid[i].length; j++) { // 각 행의 열을 반복
-						boolean isCenter = i >= 3 && i < 7 && j >= 3 && j < 7;
-						if (isCenter) {
-							grid[i][j] = true; // 중앙에 위치하면 9로 설정
-						}
-						System.out.print(grid[j][i] + " "); // 배열의 각 요소를 출력
-					}
-					System.out.println(); // 각 행이 끝날 때마다 줄바꿈
-				}
-				System.out.println();
 				skinList.set(selectedCustom, new AbstractMap.SimpleEntry<>(grid, colors[selectedColorIndex]));
 				FileManager.saveSkinList(skinList);
 				this.returnCode = 1;

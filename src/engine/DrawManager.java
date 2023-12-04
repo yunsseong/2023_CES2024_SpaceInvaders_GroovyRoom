@@ -1801,44 +1801,46 @@ public final class DrawManager {
                 }
             }
 
+            int gap = 20;
+
             // Draw cancel button
-            int cancelButtonWidth = 100;
+            int cancelButtonWidth = 170;
             int cancelButtonHeight = 40;
-            int cancelButtonX = 50;
+            int cancelButtonX = gap;
             int cancelButtonY = 350;
 
             backBufferGraphics.setColor(Color.WHITE);
             backBufferGraphics.drawRect(cancelButtonX, cancelButtonY, cancelButtonWidth, cancelButtonHeight); // Draw white border
 
             FontMetrics fontMetrics = backBufferGraphics.getFontMetrics();
-            int textWidth = fontMetrics.stringWidth("Cancel");
+            int textWidth = fontMetrics.stringWidth("Cancel(ESC)");
             int textHeight = fontMetrics.getHeight();
-// X 좌표 계산하여 가운데 정렬
+
             int centerX = cancelButtonX + (cancelButtonWidth - textWidth) / 2;
             int centerY = cancelButtonY + (cancelButtonHeight - textHeight) / 2 + fontMetrics.getAscent();
 
-// 그리기
-            backBufferGraphics.drawString("Cancel", centerX, centerY);
+
+            backBufferGraphics.drawString("Cancel(ESC)", centerX, centerY);
 
 
-            int buttonWidth = 100;
+            int buttonWidth = 170;
             int buttonHeight = 40;
-            int saveButtonX = 300;
+            int saveButtonX = frame.getWidth()-gap - buttonWidth;
             int saveButtonY = 350;
 
-// Draw save button
+
             backBufferGraphics.setColor(Color.WHITE);
             backBufferGraphics.drawRect(saveButtonX, saveButtonY, buttonWidth, buttonHeight); // Draw white border
 
             fontMetrics = backBufferGraphics.getFontMetrics();
-            textWidth = fontMetrics.stringWidth("Save");
+            textWidth = fontMetrics.stringWidth("Save(Enter)");
             textHeight = fontMetrics.getHeight();
 
 // Calculate the center coordinates for the text
             centerX = saveButtonX + (buttonWidth - textWidth) / 2;
             centerY = saveButtonY + (buttonHeight - textHeight) / 2 + fontMetrics.getAscent();
 
-            backBufferGraphics.drawString("Save", centerX, centerY);
+            backBufferGraphics.drawString("Save(Enter)", centerX, centerY);
 
         }
     }
