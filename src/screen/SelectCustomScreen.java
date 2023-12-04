@@ -3,9 +3,13 @@ package screen;
 
 import engine.Cooldown;
 import engine.Core;
+import engine.FileManager;
 import engine.SoundManager;
 
+import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.Map;
 
 import static screen.TitleScreen.menuSelection;
 
@@ -17,6 +21,8 @@ public class SelectCustomScreen extends Screen {
 		super(width, height, FPS);
 		this.selectionCooldown = Core.getCooldown(SELECTION_TIME);
 		this.selectionCooldown.reset();
+		ArrayList<Map.Entry<boolean[][], Color>> customShips = FileManager.loadSkinList();
+
 	}
 	public final int run() {
 		super.run();
@@ -45,19 +51,19 @@ public class SelectCustomScreen extends Screen {
 					this.returnCode = 9;
 					this.isRunning = false;
 					System.out.println("넘기는 값 Returned code: " + this.returnCode);
+				} else if ("gameplay".equals(menuSelection) ) { // 게임 메뉴 선택시
+						this.returnCode = 7;
+						this.isRunning = false;
+						System.out.println("넘기는 값 Returned code: " + this.returnCode);
+					}
 
-				} else if ("gameplay".equals(menuSelection)) {
-					// '게임 시작' 메뉴를 선택한 경우의 처리
-					this.returnCode = 7;
-					this.isRunning = false;
-					System.out.println("넘기는 값 Returned code: " + this.returnCode);
 				}
 			} else if (inputManager.isKeyDown(KeyEvent.VK_ESCAPE)) {
 				this.returnCode = 1;
 				this.isRunning = false;
 			}
 		}
-	}
+
 	/**
 	 * Shifts the focus to the next menu item.
 	 */
