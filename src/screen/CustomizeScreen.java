@@ -220,7 +220,7 @@ public class CustomizeScreen extends Screen {
 	}
 	public void setSelectedColorIndex(int index) {
 		if (index >= 0 && index < colors.length) {
-			this.selectedColorIndex = index +1;
+			this.selectedColorIndex = index;
 			this.selectedColor = colors[index];
 		} else {
 			throw new IllegalArgumentException("Invalid index: " + index);

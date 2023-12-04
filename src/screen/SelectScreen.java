@@ -91,7 +91,6 @@ public class SelectScreen extends Screen{
 
         }
     }
-
     /**
      * Draws the elements associated with the screen.
      */

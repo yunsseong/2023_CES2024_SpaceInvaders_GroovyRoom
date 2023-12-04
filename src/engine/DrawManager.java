@@ -1627,8 +1627,6 @@ public final class DrawManager {
             }
         }
     }
-
-
     public void drawSelectCustom(final Screen screen, int selectedBox) {
         ArrayList<Map.Entry<boolean[][], Color>> customShips = FileManager.loadSkinList();
         selectedCustom = selectedBox;
@@ -1678,7 +1676,6 @@ public final class DrawManager {
             }
         }
     }
-
 
     public void drawCustomizing(final CustomizeScreen screen, int x_postion, int y_postion, Color[][] filledColors) {
         Font fontTitle = new Font("SansSerif", Font.TRUETYPE_FONT, 40);
@@ -1786,8 +1783,6 @@ public final class DrawManager {
                     g2d.fillRect(boxX, boxY, boxSize, boxSize);
                     g2d.setColor(Color.RED);
                     g2d.drawRect(boxX, boxY, boxSize, boxSize);
-
-
                 } else {
                     if (isFilled[i][j]) {
                         // Fill center box with color
