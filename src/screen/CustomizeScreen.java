@@ -43,7 +43,7 @@ public class CustomizeScreen extends Screen {
 		for(int i=0; i<10; i++){
 			for(int j=0; j<10; j++){
 				boolean isCenter = i >= 3 && i < 7 && j >= 3 && j < 7;
-				if(isCenter) filledColors[i][j] = Color.WHITE;
+				if(isCenter) filledColors[i][j] = skinList.get(selectedCustom).getValue();
 				if(filledColors[i][j]!=null) grid[i][j] = true;
 			}
 		}
