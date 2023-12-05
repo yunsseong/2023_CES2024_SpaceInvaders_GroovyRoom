@@ -174,7 +174,7 @@ public final class DrawManager {
     /**
      * Private constructor.
      */
-    private DrawManager() {
+    public DrawManager() {
 
         fileManager = Core.getFileManager();
         logger = Core.getLogger();
@@ -255,6 +255,10 @@ public final class DrawManager {
      * @param screen Screen to draw in.
      */
     public void initDrawing(final Screen screen) {
+        if (frame == null) {
+            // frame이 null이면 초기화
+            frame = new Frame(800,600,60);
+        }
         backBuffer = new BufferedImage(screen.getWidth(), screen.getHeight() + frame.getBottomHudHeight(),
                 BufferedImage.TYPE_INT_RGB);
 
@@ -1627,6 +1631,8 @@ public final class DrawManager {
         }
     }
     public void drawSelectCustom(final Screen screen, int selectedBox) {
+
+
         ArrayList<Map.Entry<boolean[][], Color>> customShips = FileManager.loadSkinList();
         selectedCustom = selectedBox;
         Font fontTitle = new Font("SansSerif", Font.TRUETYPE_FONT, 25);

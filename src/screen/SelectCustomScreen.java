@@ -30,7 +30,7 @@ public class SelectCustomScreen extends Screen {
 		return this.returnCode;
 	}
 
-	protected final void update() {
+	public final void update() {
 		super.update();
 		draw();
 		if (this.selectionCooldown.checkFinished()

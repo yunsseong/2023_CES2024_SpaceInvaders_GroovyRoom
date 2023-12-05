@@ -11,11 +11,14 @@ import static engine.DrawManager.selectedCustom;
 
 public class CustomizeScreen extends Screen {
 	int selectedColorIndex = 0; // Default is 0 (Red)
-	private Color selectedColor;
+	public Color selectedColor;
 
-	Color[][] filledColors = new Color[10][10]; // 각 위치의 색상 정보를 저장하는 배열
+	public Color[][] filledColors = new Color[10][10]; // 각 위치의 색상 정보를 저장하는 배열
 
 
+	protected ArrayList<Map.Entry<boolean[][], Color>> getSkinList() {
+		return this.skinList;
+	}
 	ArrayList<Map.Entry<boolean[][], Color>> skinList;
 	boolean [][] grid;
 	private Color[] colors;
@@ -212,6 +215,16 @@ public class CustomizeScreen extends Screen {
 
 	public int getSelectedColorIndex() {
 		return this.selectedColorIndex;
+	}
+	public int getXPosition() {
+		return x_position;
+	}
+
+	public int getYPosition() {
+		return y_position;
+	}
+	public Color[][] getFilledColors() {
+		return filledColors;
 	}
 
 }

@@ -41,7 +41,7 @@ public class Screen {
 	/** If the screen is running. */
 	protected boolean isRunning;
 	/** What kind of screen goes next. */
-	protected int returnCode;
+    public int returnCode;
 	
 	protected boolean soundSelect;
 
@@ -127,4 +127,6 @@ public class Screen {
 	public final int getHeight() {
 		return this.height;
 	}
+
+
 }
