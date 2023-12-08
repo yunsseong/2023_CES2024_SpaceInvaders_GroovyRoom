@@ -161,10 +161,12 @@ public class CustomizeScreen extends Screen {
 			if (inputManager.isKeyDown(KeyEvent.VK_ENTER)) {
 				skinList.set(selectedCustom, new AbstractMap.SimpleEntry<>(grid, colors[selectedColorIndex]));
 				FileManager.saveSkinList(skinList);
+
 				this.returnCode = 1;
 				this.isRunning = false;
 			}
 		}
+
 	}
 
 	/**
@@ -226,5 +228,11 @@ public class CustomizeScreen extends Screen {
 	public Color[][] getFilledColors() {
 		return filledColors;
 	}
+
+	// CustomizeScreen 클래스 내부에 추가
+	public boolean[][] getGrid() {
+		return grid;
+	}
+
 
 }
