@@ -1,31 +1,37 @@
 package screen;
 
-import engine.Cooldown;
-import engine.Core;
-import engine.SoundManager;
+import engine.*;
 
 import java.awt.*;
+import java.awt.List;
 import java.awt.event.KeyEvent;
+import java.util.*;
+
+import static engine.DrawManager.selectedCustom;
 
 public class CustomizeScreen extends Screen {
 	int selectedColorIndex = 0; // Default is 0 (Red)
-	private Color selectedColor;
+	public Color selectedColor;
 
-	Color[][] filledColors = new Color[10][10]; // 각 위치의 색상 정보를 저장하는 배열
+	public Color[][] filledColors = new Color[10][10]; // 각 위치의 색상 정보를 저장하는 배열
 
-	int [][] grid = new int[10][10];
+
+	protected ArrayList<Map.Entry<boolean[][], Color>> getSkinList() {
+		return this.skinList;
+	}
+	ArrayList<Map.Entry<boolean[][], Color>> skinList;
+	boolean [][] grid;
 	private Color[] colors;
 	private Cooldown selectionCooldown;
-	private static final int SELECTION_TIME = 200;
-	private boolean[][] filledSpaces = new boolean[10][10];  // 각 위치가 채워졌는지 추적하는 배열
+	private static final int SELECTION_TIME = 200; // 각 위치가 채워졌는지 추적하는 배열
 
 
 	private int x_position;
 	private int y_position;
+	private int index;
 
 
 	public CustomizeScreen(int width, int height, int fps) {
-
 
 		super(width, height, fps);
 		this.x_position =3;
@@ -34,6 +40,15 @@ public class CustomizeScreen extends Screen {
 		this.selectionCooldown.reset();
 		// Initialize the colors array with user provided colors
 
+		skinList = FileManager.loadSkinList();
+		grid = skinList.get(selectedCustom).getKey();
+		for(int i=0; i<10; i++){
+			for(int j=0; j<10; j++){
+				boolean isCenter = i >= 3 && i < 7 && j >= 3 && j < 7;
+				if(isCenter) filledColors[i][j] = skinList.get(selectedCustom).getValue();
+				if(filledColors[i][j]!=null) grid[i][j] = true;
+			}
+		}
 		Color navy = new Color(0, 0, 128); // 네이비
 		Color purple = new Color(70, 38, 121); // 보라
 		Color green = new Color(34, 143, 34); // 그린
@@ -55,7 +70,6 @@ public class CustomizeScreen extends Screen {
 
 
 	}
-
 	public final int run() {
 		super.run();
 		return this.returnCode;
@@ -63,7 +77,10 @@ public class CustomizeScreen extends Screen {
 
 	protected final void update() {
 		super.update();
+
 		draw();
+
+		if(FileManager.loadSkinList()!=null) skinList = FileManager.loadSkinList();
 
 		if (this.selectionCooldown.checkFinished() && this.inputDelay.checkFinished()) {
 			if (inputManager.isKeyDown(KeyEvent.VK_1)) { // 1번 클릭 빨간색
@@ -95,31 +112,33 @@ public class CustomizeScreen extends Screen {
 				this.selectionCooldown.reset();
 			}
 		}
-
 		if (this.selectionCooldown.checkFinished()
 				&& this.inputDelay.checkFinished()) {
 			if (inputManager.isKeyDown(KeyEvent.VK_UP)
 					|| inputManager.isKeyDown(KeyEvent.VK_W)) {
 				up();
 				this.selectionCooldown.reset();
-				;
 			}
-			if (inputManager.isKeyDown(KeyEvent.VK_DOWN)
+			else if (inputManager.isKeyDown(KeyEvent.VK_DOWN)
 					|| inputManager.isKeyDown(KeyEvent.VK_S)) {
 				down();
 				this.selectionCooldown.reset();
 			}
-			if (inputManager.isKeyDown(KeyEvent.VK_RIGHT)
+			else if (inputManager.isKeyDown(KeyEvent.VK_RIGHT)
 					|| inputManager.isKeyDown(KeyEvent.VK_D)) {
 				right();
 				this.selectionCooldown.reset();
 			}
-			if (inputManager.isKeyDown(KeyEvent.VK_LEFT)
+			else if (inputManager.isKeyDown(KeyEvent.VK_LEFT)
 					|| inputManager.isKeyDown(KeyEvent.VK_A)) {
 				left();
 				this.selectionCooldown.reset();
 			}
-			if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
+			else if(inputManager.isKeyDown(KeyEvent.VK_ESCAPE)){
+				this.returnCode = 10;
+				this.isRunning = false;
+			}
+			else if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
 				/**
 				 boolean adjacentFilled = // 인접한지 확인
 				 (x_position > 0 && filledSpaces[x_position - 1][y_position]) || // 왼쪽 확인
@@ -131,29 +150,23 @@ public class CustomizeScreen extends Screen {
 				 **/
 				SoundManager.playSound("SFX/S_MenuClick", "menu_select", false, false);
 				filledColors[x_position][y_position] = selectedColor;
-				grid[x_position][y_position] = selectedColorIndex;
+				grid[x_position][y_position] = true;
 			}
 			if (inputManager.isKeyDown(KeyEvent.VK_DELETE)) {
 				SoundManager.playSound("SFX/S_MenuClick", "menu_select", false, false);
 				filledColors[x_position][y_position] = null;
-				grid[x_position][y_position] = 0; // 색상을 삭제하면 grid의 해당 위치도 0으로 설정
+				grid[x_position][y_position] = false; // 색상을 삭제하면 grid의 해당 위치도 0으로 설정
 
 			}
 			if (inputManager.isKeyDown(KeyEvent.VK_ENTER)) {
-				System.out.println("현재 우주선 그래픽 배열 정보");
-				for (int i = 0; i < grid.length; i++) { // 행을 반복
-					for (int j = 0; j < grid[i].length; j++) { // 각 행의 열을 반복
-						boolean isCenter = i >= 3 && i < 7 && j >= 3 && j < 7;
-						if (isCenter) {
-							grid[i][j] = 9; // 중앙에 위치하면 9로 설정
-						}
-						System.out.print(grid[j][i] + " "); // 배열의 각 요소를 출력
-					}
-					System.out.println(); // 각 행이 끝날 때마다 줄바꿈
-				}
-				System.out.println();
+				skinList.set(selectedCustom, new AbstractMap.SimpleEntry<>(grid, colors[selectedColorIndex]));
+				FileManager.saveSkinList(skinList);
+
+				this.returnCode = 1;
+				this.isRunning = false;
 			}
 		}
+
 	}
 
 	/**
@@ -195,7 +208,7 @@ public class CustomizeScreen extends Screen {
 	}
 	public void setSelectedColorIndex(int index) {
 		if (index >= 0 && index < colors.length) {
-			this.selectedColorIndex = index +1;
+			this.selectedColorIndex = index;
 			this.selectedColor = colors[index];
 		} else {
 			throw new IllegalArgumentException("Invalid index: " + index);
@@ -204,6 +217,21 @@ public class CustomizeScreen extends Screen {
 
 	public int getSelectedColorIndex() {
 		return this.selectedColorIndex;
+	}
+	public int getXPosition() {
+		return x_position;
+	}
+
+	public int getYPosition() {
+		return y_position;
+	}
+	public Color[][] getFilledColors() {
+		return filledColors;
+	}
+
+	// CustomizeScreen 클래스 내부에 추가
+	public boolean[][] getGrid() {
+		return grid;
 	}
 
 
